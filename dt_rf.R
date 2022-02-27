@@ -3,18 +3,22 @@ library(tree)
 library(caret)
 
 # read data
-heart=read.csv("Heart.csv",header = TRUE)
+    # heart=read.csv("Heart.csv",header = TRUE)
+lol.ori=read.csv("high_diamond_ranked_10min.csv",header = TRUE)
+
+# summary of data
+str(lol.ori)
+summary(lol.ori)
 
 # pre-process data
-sum(is.na(heart)) #check missing values
-heart=heart[complete.cases(heart),]
-heart$AHD=factor(heart$AHD)
-heart$ChestPain=factor(heart$ChestPain)
-heart$Thal=factor(heart$Thal)
+sum(is.na(lol.ori)) # check missing values
+set.seed(888)
+lol.blue=lol.ori[sample(which(lol.ori$blueWins == 1,),240),]
+lol.red=lol.ori[sample(which(lol.ori$blueWins == 0,),240),]
+lol = rbind(lol.blue,lol.red)
 
 # random split to training and test set
-set.seed(888)
-train.index=createDataPartition(heart$AHD,p=0.7,list=FALSE)
+train.index=createDataPartition(lol$blueWins,p=0.7,list=FALSE)
 train=heart[train.index,]
 test=heart[-train.index,]
 
@@ -23,12 +27,12 @@ test=heart[-train.index,]
 #################
 
 # cross validation to select best tuning parameter alpha (cost complexity pruning)
-fitcontrol=trainControl(method = "repeatedcv", number = 10, repeats = 3)
+fitcontrol=trainControl(method = "repeatedcv", number = 10, repeats = 10)
 
-set.seed(5)s
+set.seed(5)
 # train and prune decision tree
 heart.rpart=train(train[,-ncol(heart)],train[,ncol(heart)], 
-                  method = "rpart", tuneLength=5,
+                  method = "rpart", tuneLength=10,
                   trControl = fitcontrol) # >>> rpart = alpha
 
 # summary of decision tree

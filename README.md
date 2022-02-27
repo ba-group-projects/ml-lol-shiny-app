@@ -1,4 +1,4 @@
-# Machine Learning SMM636 Group Projects Repository
+# Machine Learning SMM636 Group Project 1 (25%)
 
 ## Deliverables:
 - Please upload your report in one pdf file. Please also include the total number of words on the front page of the report.

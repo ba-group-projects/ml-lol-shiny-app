@@ -2,9 +2,9 @@
 library(caret)
 library(dplyr)
 library(rattle)
+library(corrplot)
 
 # read data
-    # heart=read.csv("Heart.csv",header = TRUE)
 lol.ori = read.csv("high_diamond_ranked_10min.csv", header = TRUE)
 
 # summary of data
@@ -15,13 +15,34 @@ summary(lol.ori)
 sum(is.na(lol.ori)) # check missing values
 last.colname = names(lol.ori)[ncol(lol.ori)] # get header of last column
 lol.ori = lol.ori %>% relocate(blueWins, .after = all_of(last.colname)) # reorder classification column
-lol.ori$blueWins[lol.ori$blueWins == 1] <- "Blue"
-lol.ori$blueWins[lol.ori$blueWins == 0] <- "Red"
-lol.ori$blueWins = factor(lol.ori$blueWins)
 set.seed(100)
-lol.blue = lol.ori[sample(which(lol.ori$blueWins == "Blue",), 240),]
-lol.red = lol.ori[sample(which(lol.ori$blueWins == "Red",), 240),]
+lol.blue = lol.ori[sample(which(lol.ori$blueWins == 1,), 240),]
+lol.red = lol.ori[sample(which(lol.ori$blueWins == 0,), 240),]
 lol = rbind(lol.blue, lol.red)
+
+# correlation matrix
+### >>> create 1 corr plot of blue features vs blue features
+### >>> create 1 corr plot of blue features vs red features
+
+par(mfrow=c(1,1))
+corrplot(cor(lol[,-c(1,ncol(lol))]), tl.col = "black") #, type = "upper"
+lol.cor = cor(lol[,-c(1,ncol(lol))])
+
+# drop.blue.features = c(1)
+
+drop.red.features = c('redFirstBlood', 'redKills', 'redDeaths', 'redAssists',
+                      'redDragons', 'redTotalGold', 'redAvgLevel', 'redTotalExperience',
+                      'redGoldDiff', 'redExperienceDiff', 'redGoldPerMin')
+
+### dropped variables from example
+# repeated = ['redfirstblood', redkills', 'reddeaths', 'redgolddiff','redfirstblood',
+#             'redexperiencediff', 'redcspermin', 'redgoldpermin', 'redheralds',
+#             'blueavglevel', 'bluecspermin', 'bluegoldpermin']
+
+# modify classification column
+lol$blueWins[lol$blueWins == 1] <- "Blue"
+lol$blueWins[lol$blueWins == 0] <- "Red"
+lol$blueWins = factor(lol$blueWins)
 
 # random split to training and test set
 train.index = createDataPartition(lol$blueWins, p = 0.6, list = FALSE)

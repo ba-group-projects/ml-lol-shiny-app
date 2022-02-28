@@ -13,39 +13,46 @@ summary(lol.ori)
 
 # pre-process data
 sum(is.na(lol.ori)) # check missing values
-last.colname = names(lol.ori)[ncol(lol.ori)] # get header of last column
-lol.ori = lol.ori %>% relocate(blueWins, .after = all_of(last.colname)) # reorder classification column
+lol.ori = lol.ori[,-1]
+
 set.seed(100)
 lol.blue = lol.ori[sample(which(lol.ori$blueWins == 1,), 240),]
 lol.red = lol.ori[sample(which(lol.ori$blueWins == 0,), 240),]
-lol = rbind(lol.blue, lol.red)
+lol.sample = rbind(lol.blue, lol.red)
 
-# correlation matrix
-### >>> create 1 corr plot of blue features vs blue features
-### >>> create 1 corr plot of blue features vs red features
-
+# feature engineering
 par(mfrow=c(1,1))
-corrplot(cor(lol[,-c(1,ncol(lol))]), tl.col = "black") #, type = "upper"
-lol.cor = cor(lol[,-c(1,ncol(lol))])
+blue.features = lol.sample[,c(2:20)]
+corrplot(cor(blue.features), tl.col = "black", diag = FALSE)
+drop.blue.features = c('blueDragons', 'blueHeralds', 'blueKills', 
+                       'blueDeaths', 'blueAssists', 'blueTotalGold',
+                       'blueAvgLevel', 'blueTotalExperience', 'blueExperienceDiff',
+                       'blueGoldPerMin', 'blueTotalMinionsKilled')
+blue.features = blue.features[, !(colnames(blue.features) %in% drop.blue.features)]
 
-# drop.blue.features = c(1)
+red.features = lol.sample[,-c(1, 2:20)]
+corrplot(cor(blue.features, red.features), tl.col = "black", diag = TRUE)
+drop.red.features = c('redFirstBlood','redKills', 'redDeaths', 'redAssists', 
+                      'redEliteMonsters', 'redDragons', 'redTotalGold', 
+                      'redAvgLevel', 'redTotalExperience', 'redTotalMinionsKilled',
+                      'redGoldDiff', 'redExperienceDiff', 'redCSPerMin', 'redGoldPerMin')
+red.features = red.features[, !(colnames(red.features) %in% drop.red.features)]
+blueWins = lol.sample$blueWins
 
-drop.red.features = c('redFirstBlood', 'redKills', 'redDeaths', 'redAssists',
-                      'redDragons', 'redTotalGold', 'redAvgLevel', 'redTotalExperience',
-                      'redGoldDiff', 'redExperienceDiff', 'redGoldPerMin')
-
-### dropped variables from example
-# repeated = ['redfirstblood', redkills', 'reddeaths', 'redgolddiff','redfirstblood',
-#             'redexperiencediff', 'redcspermin', 'redgoldpermin', 'redheralds',
-#             'blueavglevel', 'bluecspermin', 'bluegoldpermin']
+lol = cbind(blue.features, red.features, blueWins)
+corrplot(cor(lol), tl.col = "black", diag = FALSE)
+drop.more.features = c('blueWardsPlaced', 'blueWardsDestroyed', 'blueTowersDestroyed',
+                       'redWardsPlaced', 'redWardsDestroyed', 'redTowersDestroyed')
+lol = lol[, !(colnames(lol) %in% drop.more.features)]
 
 # modify classification column
 lol$blueWins[lol$blueWins == 1] <- "Blue"
 lol$blueWins[lol$blueWins == 0] <- "Red"
 lol$blueWins = factor(lol$blueWins)
 
+set.seed(100)
 # random split to training and test set
-train.index = createDataPartition(lol$blueWins, p = 0.6, list = FALSE)
+train.index = createDataPartition(lol$blueWins, p = 0.7, list = FALSE)
 train = lol[train.index,]
 test = lol[-train.index,]
 
@@ -54,9 +61,9 @@ test = lol[-train.index,]
 #################
 
 # cross validation to select best tuning parameter alpha (cost complexity pruning)
-fitcontrol.dt = trainControl(method = "repeatedcv", number = 5, repeats = 5)
+fitcontrol.dt = trainControl(method = "repeatedcv", number = 10, repeats = 5)
 
-set.seed(1)
+set.seed(100)
 # train and prune decision tree
 lol.dt = train(train[,-ncol(lol)], train[,ncol(lol)], method = "rpart",
                metric="Accuracy", tuneLength=5, trControl = fitcontrol.dt) # >>> rpart = alpha
@@ -79,9 +86,9 @@ fancyRpartPlot(lol.dt$finalModel)
 #################
 
 # cross validation to select m features to randomly sample
-fitcontrol.rf = trainControl(method = "repeatedcv", number = 5, repeats = 5)
+fitcontrol.rf = trainControl(method = "repeatedcv", number = 10, repeats = 5)
 
-set.seed(1)
+set.seed(100)
 # train random forest
 lol.rf = train(train[,-ncol(lol)], train[,ncol(lol)], method = "rf",
                metric="Accuracy", tuneLength=5, trControl = fitcontrol.rf) # >>> rpart = alpha

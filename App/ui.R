@@ -20,6 +20,7 @@ sidebar <- dashboardSidebar(
              menuItem('    Random Forest',tabName = "random/Forest")
              
     ),
+    menuItem("Prediction", tabName = "prediction", icon = icon("clock")),
     menuItem('Lexicon', tabName = "lexicon", icon = icon("table")),
     menuItem('Introduction Video', tabName = "introductionVideo", icon = icon("video"))
     
@@ -42,6 +43,17 @@ dashboardContent =
     tabItems(
       tabItem(tabName = 'overview'),
       tabItem(tabName = 'modelSelection'),
+      tabItem(tabName = 'decisionTree'),
+      tabItem(tabName = 'randomForest'),
+      tabItem(tabName = 'prediction',
+      fluidRow(
+          box(plotOutput("plot1", height = 250)),
+
+          box(
+            title = "Controls",
+            sliderInput("slider", "Number of observations:", 1, 100, 50)
+          )
+        )),
       tabItem(tabName = 'lexicon',
              HTML('<!DOCTYPE html>
 <html>

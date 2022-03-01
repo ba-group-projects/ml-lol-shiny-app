@@ -8,6 +8,8 @@ library(corrplot)
 # library(rpart)
 # library(rpart.plot)
 
+source("custom-functions.r")
+
 # read data
 lol.ori = read.csv("high_diamond_ranked_10min.csv", header = TRUE)
 

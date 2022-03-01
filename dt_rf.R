@@ -1,5 +1,7 @@
 # import libraries
 library(caret)
+library(tree)
+library(randomForest)
 library(dplyr)
 library(rattle)
 library(corrplot)
@@ -52,6 +54,7 @@ lol$blueWins = factor(lol$blueWins)
 
 set.seed(100)
 # random split to training and test set
+# train.index = createDataPartition(lol$blueWins, p = 0.6, list = FALSE)
 train.index = createDataPartition(lol$blueWins, p = 0.7, list = FALSE)
 train = lol[train.index,]
 test = lol[-train.index,]
@@ -60,53 +63,95 @@ test = lol[-train.index,]
 # decision tree #
 #################
 
+set.seed(100)
+lol.dt.normal = tree(blueWins ~ . , lol)
+summary(lol.dt.normal)
+# have a look at the details of the tree
+lol.dt.normal
+# # plot the tree
+plot(lol.dt.normal)
+text(lol.dt.normal,pretty=2)
+
+pred.dt.normal = predict(lol.dt.normal, newdata = test[,-ncol(test)],type="class")
+mean(pred.dt.normal == test[,ncol(test)])
+
+########################
+# decision tree pruned #
+########################
+
 # cross validation to select best tuning parameter alpha (cost complexity pruning)
 fitcontrol.dt = trainControl(method = "repeatedcv", number = 10, repeats = 5)
 
-set.seed(100)
+set.seed(50)
 # train and prune decision tree
-lol.dt = train(train[,-ncol(lol)], train[,ncol(lol)], method = "rpart",
-               metric="Accuracy", tuneLength=5, trControl = fitcontrol.dt) # >>> rpart = alpha
+# lol.dt.pruned = train(train[,-ncol(lol)], train[,ncol(lol)], method = "rpart",
+#                       metric="Accuracy", tuneLength=5, trControl = fitcontrol.dt) # >>> rpart = alpha
+
+mtryGrid=expand.grid(cp=c(0,0.0001,0.001,0.01,0.1))
+# lol.rf = train(train[,-ncol(lol)], train[,ncol(lol)], method = "rf",
+#                metric="Accuracy", tuneGrid=mtryGrid, trControl = fitcontrol.rf)
+lol.dt.pruned = train(train[,-ncol(lol)], train[,ncol(lol)], method = "rpart",
+                      metric="Accuracy", tuneGrid=mtryGrid, trControl = fitcontrol.dt)
 
 # summary of decision tree
-lol.dt
+lol.dt.pruned
 
 # performance measure
-pred.dt = predict(lol.dt, newdata = test[,-ncol(test)])
-mean(pred.dt == test[,ncol(test)])
+pred.dt.pruned = predict(lol.dt.pruned, newdata = test[,-ncol(test)])
+mean(pred.dt.pruned == test[,ncol(test)])
 
 #To look at the details of this tree
-print(lol.dt$finalModel)
+print(lol.dt.pruned$finalModel)
 
 # get fancy trees by rattle
-fancyRpartPlot(lol.dt$finalModel)
+fancyRpartPlot(lol.dt.pruned$finalModel)
 
 #################
 # random forest #
 #################
+
+set.seed(50)
+lol.rf.normal=randomForest(blueWins~.,data=lol,mtry=sqrt(ncol(lol)-1),
+                           importance=TRUE,ntree=500)
+lol.rf.normal
+pred.rf.normal=predict(lol.rf.normal,newdata=test[,-ncol(test)])
+mean(pred.rf.normal==test[,ncol(test)])
+#######importance of variables
+detach(package:rattle)
+importance(lol.rf.normal) # >>> variable importance measure
+varImpPlot(lol.rf.normal)
+
+#######################
+# random forest tuned #
+#######################
 
 # cross validation to select m features to randomly sample
 fitcontrol.rf = trainControl(method = "repeatedcv", number = 10, repeats = 5)
 
 set.seed(100)
 # train random forest
-lol.rf = train(train[,-ncol(lol)], train[,ncol(lol)], method = "rf",
-               metric="Accuracy", tuneLength=5, trControl = fitcontrol.rf) # >>> rpart = alpha
+lol.rf.tuned = train(train[,-ncol(lol)], train[,ncol(lol)], method = "rf", metric="Accuracy", 
+               tuneLength=5, trControl = fitcontrol.rf, ntree = 500) # >>> rpart = alpha
 
 # mtryGrid=expand.grid(mtry=c(2,3,4,5,6))
 # lol.rf = train(train[,-ncol(lol)], train[,ncol(lol)], method = "rf",
 #                metric="Accuracy", tuneGrid=mtryGrid, trControl = fitcontrol.rf)
 
 # summary of decision tree
-lol.rf
+lol.rf.tuned
 
 # performance measure
-pred.rf = predict(lol.rf, newdata = test[,-ncol(test)])
-mean(pred.rf == test[,ncol(test)])
+pred.rf.tuned = predict(lol.rf.tuned, newdata = test[,-ncol(test)])
+mean(pred.rf.tuned == test[,ncol(test)])
 
 #To look at the details of this tree
-print(lol.rf$finalModel)
+print(lol.rf.tuned$finalModel)
 
 # variable importance
-varImp(lol.rf)
-plot(varImp(lol.rf))
+varImp(lol.rf.tuned)
+plot(varImp(lol.rf.tuned))
+
+#####################################################################
+
+lol.dt.normal
+lol.dt.pruned$finalModel

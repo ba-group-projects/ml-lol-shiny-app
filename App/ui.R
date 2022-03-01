@@ -45,6 +45,9 @@ dashboardContent =
       tabItem(tabName = 'modelSelection'),
       tabItem(tabName = 'decisionTree'),
       tabItem(tabName = 'randomForest'),
+      ##############################
+      # prediction interaction part
+      ##############################
       tabItem(tabName = 'prediction',
       fluidRow(
           box(plotOutput("plot1", height = 250)),
@@ -116,3 +119,5 @@ server <- function(input, output) {
 }
 
 shinyApp(ui, server)
+
+

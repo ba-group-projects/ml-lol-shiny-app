@@ -58,7 +58,7 @@ fancyRpartPlot(lol.dt$finalModel)
 #################
 
 # cross validation to select m features to randomly sample
-fitcontrol.rf = trainControl(method = "repeatedcv", number = 5, repeats = 5)
+fitcontrol.rf = trainControl(method = "repeatedcv", number = 5, repeats = 5) # number is fold, repeats is number of times to repeat
 
 set.seed(1)
 # train random forest

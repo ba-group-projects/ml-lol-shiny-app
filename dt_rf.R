@@ -7,6 +7,7 @@ library(rattle)
 library(corrplot)
 
 # read data
+setwd("~/OneDrive/Documents/MyOversea/Cass Study/machine learning/MTP/MTP1/machine-learning-gp1")
 lol.ori = read.csv("high_diamond_ranked_10min.csv", header = TRUE)
 
 # summary of data

@@ -4,20 +4,26 @@ library(tree)
 library(randomForest)
 library(dplyr)
 library(corrplot)
-# library(rattle)
-# library(rpart)
-# library(rpart.plot)
+library(rattle)
+library(rpart)
+library(rpart.plot)
 
 source("custom-functions.r")
 
 # read data
 lol.ori = read.csv("high_diamond_ranked_10min.csv", header = TRUE)
 
+set.seed(100)
+lol = preprocess.data(lol.ori)
+
 # summary of data
 # str(lol.ori)
 # summary(lol.ori)
 
-# pre-process data
+####################
+# pre-process data #
+####################
+
 sum(is.na(lol.ori)) # check missing values
 lol.ori = lol.ori[,-1]
 
@@ -29,7 +35,7 @@ lol.sample = rbind(lol.blue, lol.red)
 # feature engineering
 par(mfrow=c(1,1))
 blue.features = lol.sample[,c(2:20)]
-corrplot(cor(blue.features), tl.col = "black", diag = FALSE)
+# corrplot(cor(blue.features), tl.col = "black", diag = FALSE)
 drop.blue.features = c('blueDragons', 'blueHeralds', 'blueKills', 
                        'blueDeaths', 'blueAssists', 'blueTotalGold',
                        'blueAvgLevel', 'blueTotalExperience', 
@@ -38,7 +44,7 @@ drop.blue.features = c('blueDragons', 'blueHeralds', 'blueKills',
 blue.features = blue.features[, !(colnames(blue.features) %in% drop.blue.features)]
 
 red.features = lol.sample[,-c(1, 2:20)]
-corrplot(cor(blue.features, red.features), tl.col = "black", diag = TRUE)
+# corrplot(cor(blue.features, red.features), tl.col = "black", diag = TRUE)
 drop.red.features = c('redFirstBlood','redKills', 'redDeaths', 'redAssists', 
                       'redEliteMonsters', 'redDragons', 'redTotalGold', 
                       'redAvgLevel', 'redTotalExperience', 
@@ -48,7 +54,7 @@ red.features = red.features[, !(colnames(red.features) %in% drop.red.features)]
 blueWins = lol.sample$blueWins
 
 lol = cbind(blue.features, red.features, blueWins)
-corrplot(cor(lol), tl.col = "black", diag = FALSE)
+# corrplot(cor(lol), tl.col = "black", diag = FALSE)
 drop.more.features = c('blueWardsPlaced', 'blueWardsDestroyed', 'blueTowersDestroyed',
                        'redWardsPlaced', 'redWardsDestroyed', 'redTowersDestroyed')
 lol = lol[, !(colnames(lol) %in% drop.more.features)]
@@ -58,12 +64,22 @@ lol$blueWins[lol$blueWins == 1] <- "Blue"
 lol$blueWins[lol$blueWins == 0] <- "Red"
 lol$blueWins = factor(lol$blueWins)
 
-set.seed(100)
-# random split to training and test set
+# check = (lol.test == lol)
+# sum(check)
+
+# # old train test split
+# set.seed(100)
 # train.index = createDataPartition(lol$blueWins, p = 0.6, list = FALSE)
-train.index = createDataPartition(lol$blueWins, p = 0.8, list = FALSE)
-train = lol[train.index,]
-test = lol[-train.index,]
+# train = lol[train.index,]
+# test = lol[-train.index,]
+
+####################
+# train test split #
+####################
+set.seed(100)
+train.test = train.test.split(lol, 0.6)
+train = train.test[[1]]
+test = train.test[[2]]
 
 #######################
 # BASIC DECISION TREE #
@@ -83,9 +99,13 @@ text(lol.dt.basic,pretty=1)
 pred.dt.basic = predict(lol.dt.basic, newdata = test[,-ncol(test)], type = "class")
 confusionMatrix(pred.dt.basic, test[,ncol(test)])
 
+test.func = train.dt.basic(train)
+plot(test.func)
+text(test.func,pretty=1)
+
 # ### rpart library
 # set.seed(100)
-# lol.dt.basic2 = rpart(blueWins ~ . , lol, method = 'class', cp = 10)
+# lol.dt.basic2 = rpart(blueWins ~ . , train, method = 'class', cp = 0)
 # summary(lol.dt.basic2)
 # # have a look at the details of the tree
 # lol.dt.basic2
@@ -136,26 +156,30 @@ confusionMatrix(pred.dt.pruned, test[,ncol(test)])
 # BASIC RANDOM FOREST #
 #######################
 
-set.seed(5)
-lol.rf.basic=randomForest(blueWins~.,data=train,mtry=sqrt(ncol(lol)-1),
+set.seed(100)
+lol.rf.basic=randomForest(blueWins~.,data=train,mtry=sqrt(ncol(train)-1),
                           importance=TRUE,ntree=500)
 lol.rf.basic
 
 # performance measure using confusion matrix
-pred.rf.basic=predict(lol.rf.basic,newdata=test[,-ncol(test)])
+pred.test.rf.basic=predict(lol.rf.basic,newdata=test[,-ncol(test)])
+mean(pred.test.rf.basic==test[,ncol(test)])
 confusionMatrix(pred.rf.basic, test[,ncol(test)])
+
+pred.train.rf.basic=predict(lol.rf.basic,newdata=train[,-ncol(train)])
+mean(pred.train.rf.basic==train[,ncol(train)])
 
 #######importance of variables
 # detach(package:rattle)
 importance(lol.rf.basic) # >>> variable importance measure
-varImpPlot(lol.rf.basic)
+varImpPlot(lol.rf.basic, main="Variable Importance")
 
 #######################
 # TUNED RANDOM FOREST #
 #######################
 
 # cross validation to select m features to randomly sample
-fitcontrol.rf = trainControl(method = "repeatedcv", number = 10, repeats = 5)
+fitcontrol.rf = trainControl(method = "repeatedcv", number = 10, repeats = 2)
 
 set.seed(6)
 # train random forest
@@ -171,8 +195,16 @@ lol.rf.tuned = train(train[,-ncol(lol)], train[,ncol(lol)], method = "rf",
 lol.rf.tuned
 
 # performance measure using confusion matrix
-pred.rf.tuned = predict(lol.rf.tuned, newdata = test[,-ncol(test)])
+pred.train.rf.tuned = predict(lol.rf.tuned, newdata = train[,-ncol(train)])
+mean(pred.train.rf.tuned==train[,ncol(train)])
+
+pred.test.rf.tuned = predict(lol.rf.tuned, newdata = test[,-ncol(test)])
+mean(pred.test.rf.tuned==test[,ncol(test)])
 confusionMatrix(pred.rf.tuned, test[,ncol(test)])
+
+set.seed(6)
+lol.rf.tuned.check = train.rf.tuned(500, train, test)
+lol.rf.tuned.check
 
 #To look at the details of this tree
 print(lol.rf.tuned$finalModel)

@@ -60,18 +60,18 @@ lol$blueWins = factor(lol$blueWins)
 
 set.seed(100)
 # random split to training and test set
-train.index = createDataPartition(lol$blueWins, p = 0.6, list = FALSE)
-# train.index = createDataPartition(lol$blueWins, p = 0.7, list = FALSE)
+# train.index = createDataPartition(lol$blueWins, p = 0.6, list = FALSE)
+train.index = createDataPartition(lol$blueWins, p = 0.8, list = FALSE)
 train = lol[train.index,]
 test = lol[-train.index,]
 
 #######################
-# basic decision tree #
+# BASIC DECISION TREE #
 #######################
 
 ### tree library
 set.seed(100)
-lol.dt.basic = tree(blueWins ~ . , lol)
+lol.dt.basic = tree(blueWins ~ . , train)
 summary(lol.dt.basic)
 # have a look at the details of the tree
 lol.dt.basic
@@ -99,7 +99,7 @@ confusionMatrix(pred.dt.basic, test[,ncol(test)])
 # confusionMatrix(pred.dt.basic2, test[,ncol(test)])
 
 ########################
-# pruned decision tree #
+# PRUNED DECISION TREE #
 ########################
 
 # cross validation to select best tuning parameter alpha (cost complexity pruning)
@@ -133,11 +133,11 @@ confusionMatrix(pred.dt.pruned, test[,ncol(test)])
 # fancyRpartPlot(lol.dt.pruned$finalModel, palettes=c("Blues", "Reds"))
 
 #######################
-# basic random forest #
+# BASIC RANDOM FOREST #
 #######################
 
 set.seed(5)
-lol.rf.basic=randomForest(blueWins~.,data=lol,mtry=sqrt(ncol(lol)-1),
+lol.rf.basic=randomForest(blueWins~.,data=train,mtry=sqrt(ncol(lol)-1),
                           importance=TRUE,ntree=500)
 lol.rf.basic
 
@@ -151,7 +151,7 @@ importance(lol.rf.basic) # >>> variable importance measure
 varImpPlot(lol.rf.basic)
 
 #######################
-# tuned random forest #
+# TUNED RANDOM FOREST #
 #######################
 
 # cross validation to select m features to randomly sample

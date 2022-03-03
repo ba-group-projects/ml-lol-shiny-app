@@ -10,6 +10,7 @@ library(rattle)
 library(corrplot)
 library(rpart)
 library(rpart.plot)
+library(stringr)
 
 # read data
 setwd("~/OneDrive/Documents/MyOversea/Cass Study/machine learning/MTP/MTP1/machine-learning-gp1")
@@ -151,15 +152,17 @@ useTree <- function(tree, data) {
   return(results)
 }
 
-get.dt.features <- function(tree) {
-  rpart.rules <- data.frame(rpart:::labels.rpart(tree))[1][-1, ]
 
-  imp.features <- c()
+get.dt.features<-function(tree){
+  rpart.rules = data.frame(labels(tree))[1][-1,]
+  
+  imp.features = c()
   for (feature in str_extract_all(rpart.rules, "\\w*")) {
-    print(feature[1])
-    imp.features <- rbind(imp.features, feature[1])
+    # print(feature[1])
+    imp.features = rbind(imp.features, feature[1])
   }
-  return(unique(imp.features))
+  output = unique(imp.features)
+  return(paste(output))
 }
 
 ###################################
@@ -464,7 +467,45 @@ dashboardContent <-
         fluidRow(
           box(plotOutput("decisionTreeTrainPlot_", height = 600)),
           box(
-            title = "Controls",
+            h3("Predict which team would win!"),
+            span(textOutput("impFeatures"), style="color:#fff"),
+            actionButton(
+              inputId = "treePredict",
+              label = "Predict Winner",
+              class = "btn-primary",#"btn-danger" # makes it blue!
+              style = "color: #fff"
+            ),
+            br(),
+            br(),
+            conditionalPanel(
+              condition = "output.impFeatures.indexOf('blueFirstBlood') > -1",
+              sliderInput("blueFirstBlood", "Blue First Blood", 0, 1, 0)
+            ),
+            conditionalPanel(
+              condition = "output.impFeatures.indexOf('blueGoldDiff') > -1",
+                sliderInput("blueGoldDiff", "Blue Gold Diff", -10000, 10000, 0)
+            ),
+            conditionalPanel(
+              condition = "output.impFeatures.indexOf('blueCSPerMin') > -1",
+              sliderInput("blueCSPerMin", "Blue CS Per Min", 0, 100, 0)
+            ),
+            conditionalPanel(
+              condition = "output.impFeatures.indexOf('blueEliteMonsters') > -1",
+              sliderInput("blueEliteMonsters", "Blue Elite Monsters", 0, 2, 0)
+            ),
+            conditionalPanel(
+              condition = "output.impFeatures.indexOf('blueTotalJungleMinionsKilled') > -1",
+              sliderInput("blueTotalJungleMinionsKilled", "Blue Total Jungle Minions Killed", -10000, 10000, 0)
+            ),
+            conditionalPanel(
+              condition = "output.impFeatures.indexOf('redTotalJungleMinionsKilled') > -1",
+              sliderInput("redTotalJungleMinionsKilled", "Red Total Jungle Minions Killed", 0, 200, 0)
+            ),
+            conditionalPanel(
+              condition = "output.impFeatures.indexOf('redHeralds') > -1",
+              sliderInput("redHeralds", "Red Heralds", 0, 1, 0)
+            )
+                      
             # radioButtons("firstBlood", "First Blood", c("Blue", "Red")),
             # radioButtons("herald", "Herald", c("Blue", "Red")),
             # sliderInput("blueWardsPlaced", "Blue wards placed", 0, 60, 20),
@@ -479,8 +520,7 @@ dashboardContent <-
             # sliderInput("redTowersDestroyed", "Red Towers Destroyed", 0, 1, 1),
             # sliderInput("redTotalJungleMinionsKilled", "Red Total Jungle Minions Killed", 0, 80, 20),
             # sliderInput("redTotalGold", "Red Total Gold", -10000, 10000, 0)
-            div(id = "placeholder"),
-            actionButton("addLine", "Add Line")
+
           )
         )
       )
@@ -546,26 +586,29 @@ server <- function(input, output, session) {
   # output$randomForestPlot <- renderPlot(hist(histdata, plot = FALSE), "plot1")
   # decisionTree <- createTree(train, observe(input$minSplit), observe(input$minBucket), observe(input$maxDepth))
   decisionTree <- eventReactive(
-    eventExpr = input$trainModel,
-    {
-      train.test <- train.test.split(lol, input$splitSize / 100)
-      train <- train.test[[1]]
-      test <- train.test[[2]]
+
+    eventExpr = input$trainModel, {
+      train.test = train.test.split(lol, input$splitSize/100)
+      train = train.test[[1]]
+      test = train.test[[2]]
+      
       if (input$custOpt == "Optimized Tree") {
-        valueExpr <- createTree(train)
-      } else {
-        valueExpr <- createTree(train, input$minSplit, input$minBucket, input$maxDepth, optimise = FALSE)
-        print(input$custOpt)
-        print(valueExpr)
+        valueExpr = createTree(train)
+      }else{
+        valueExpr = createTree(train, input$minSplit, input$minBucket, input$maxDepth, optimise = FALSE)
+        # print(input$custOpt)
+        # print(valueExpr)
       }
     }
   )
   output$decisionTreeTrainPlot_ <- renderPlot(
-    rpart.plot(decisionTree(), box.palette = "BuRd")
+    rpart.plot(decisionTree(), box.palette = "BuRd", roundint=FALSE)
   )
   output$decisionTreeTrainPlot <- renderPlot(
-    rpart.plot(decisionTree(), box.palette = "BuRd")
+    rpart.plot(decisionTree(), box.palette = "BuRd", roundint=FALSE)
   )
+
+  output$impFeatures = renderText(get.dt.features(decisionTree()))
 
   ##############################
   #### eventReactive############
@@ -584,14 +627,14 @@ server <- function(input, output, session) {
   ##############################
   #### observeEvent############
   ##############################
-  observeEvent(input$addLine, {
-    new_id <- paste("row", input$addLine, sep = "_")
-    insertUI(
-      selector = "#placeholder",
-      where = "beforeBegin",
-      ui = sliderInput("blueWardsDestroyed", "Red wards placed", 0, 120, 20)
-    )
-  })
+
+  # observeEvent(input$addLine, {
+  #   new_id <- paste("row", input$addLine, sep = "_")
+  #   insertUI(
+  #     selector = "#placeholder",
+  #     where = "beforeBegin",
+  #     ui = sliderInput("blueWardsDestroyed", "Red wards placed", 0, 120, 20))}
+  #   )
 
   # # obvervation for customizer and optimizer
   # observeEvent(input$custOpt, {

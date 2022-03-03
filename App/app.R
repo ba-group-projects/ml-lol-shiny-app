@@ -185,10 +185,18 @@ train.rf.tuned <- function(ntree, train, test) {
   return(list(model, pred.train.acc, pred.test.acc))
 }
 
-predict.rf.tuned <- function(model, user.input) {
-  prediction <- predict(model, user.input)
+predict.winner <- function(model, user.input, model.type) {
+  
+  if (model.type == "dt") {
+      prediction = predict(model, user.input)
+      prediction = colnames(data.frame(prediction))[max.col(data.frame(prediction))]
+  } else {
+      prediction = predict(model, user.input)
+  }
+  
   return(prediction)
 }
+
     ###################################
     ### >>> PERFORMANCE MEASURE <<< ###
     ###################################
@@ -489,6 +497,10 @@ dashboardContent <-
                 br(),
                 # training results table matches layout from presentation
                 tableOutput("dt_test_table_")
+              ),
+              column(
+                6,
+                textOutput("dtPrediction")
               )
             )
           ),
@@ -496,7 +508,7 @@ dashboardContent <-
             h3("Predict which team would win!"),
             span(textOutput("impFeatures"), style="color:#fff"),
             actionButton(
-              inputId = "treePredict",
+              inputId = "dtModelPredict",
               label = "Predict Winner",
               class = "btn-primary",#"btn-danger" # makes it blue!
               style = "color: #fff"
@@ -630,6 +642,7 @@ server <- function(input, output, session) {
       }
     }
   )
+
   output$decisionTreeTrainPlot_ <- renderPlot(
     rpart.plot(decisionTree(), box.palette = "BuRd", roundint=FALSE)
   )
@@ -668,6 +681,23 @@ server <- function(input, output, session) {
     resultsTable(dt_test_results()),
     align = "lccc", # left-align first column, centre rest
     striped = TRUE
+  )
+
+  output$dtPrediction <- eventReactive(
+    eventExpr = input$dtModelPredict, {
+      valueExpr = predict.winner(decisionTree(),       
+                                 data.frame(blueFirstBlood = c(as.integer(input$blueFirstBlood)),
+                                            blueEliteMonsters = c(as.integer(input$blueEliteMonsters)),
+                                            blueTotalJungleMinionsKilled = c(input$blueTotalJungleMinionsKilled),
+                                            blueGoldDiff = c(input$blueGoldDiff),
+                                            blueCSPerMin = c(input$blueCSPerMin),
+                                            redHeralds = c(as.integer(input$redHeralds)),
+                                            redTotalJungleMinionsKilled = c(input$redTotalJungleMinionsKilled)),
+                                 model.type = 'dt'
+                                 )
+
+      # print(valueExpr)
+    }
   )
 
   output$dt_test_scores_ <- renderText(

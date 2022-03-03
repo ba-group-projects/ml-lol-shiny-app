@@ -78,7 +78,6 @@ test <- lol[-train.index, ]
 ############################################################
 
 train.test.split<-function(data, p){
-  set.seed(100)
   train.index = createDataPartition(data$blueWins, p = p, list = FALSE)
   train = data[train.index,]
   test = data[-train.index,]
@@ -358,10 +357,10 @@ dashboardContent <-
               br(),
               h4("Split Size"),
                   sliderInput(
-                    inputId = "splitSize",
+                    inputId = "splitSize %",
                     label = '%', # label given in outer code
-                    min = 50, # two is the smallest that could be split
-                    max = 90, # chosen to not make the models too wild
+                    min = 0, # two is the smallest that could be split
+                    max = 100, # chosen to not make the models too wild
                     value = 70 # defaults to not having an artifical minimum
                   ),
               br(),
@@ -511,23 +510,17 @@ server <- function(input, output, session) {
   # histdata <- rnorm(500)
   # output$randomForestPlot <- renderPlot(hist(histdata, plot = FALSE), "plot1")
   # decisionTree <- createTree(train, observe(input$minSplit), observe(input$minBucket), observe(input$maxDepth))
-
-  
   decisionTree <- eventReactive(
     eventExpr = input$trainModel,
-    {
-    train.test = train.test.split(lol,input$splitSize/100)
-    train = train.test[[1]]
-    test = train.test[[2]]
+    
     if (input$custOpt == "Optimized Tree") {
-      
       valueExpr = createTree(train)
     }else{
       valueExpr = createTree(train, input$minSplit, input$minBucket, input$maxDepth, optimise = FALSE)
       print(input$custOpt)
       print(valueExpr)
     }
-    }
+    
   )
   output$decisionTreeTrainPlot1 <- renderPlot(
     rpart.plot(decisionTree(), box.palette = "BuRd")

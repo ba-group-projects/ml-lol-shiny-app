@@ -79,6 +79,7 @@ test <- lol[-train.index, ]
 ############################################################
 
 train.test.split <- function(data, p) {
+  set.seed(100)
   train.index <- createDataPartition(data$blueWins, p = p, list = FALSE)
   train <- data[train.index, ]
   test <- data[-train.index, ]
@@ -151,7 +152,6 @@ useTree <- function(tree, data) {
 
   return(results)
 }
-
 
 get.dt.features<-function(tree){
   rpart.rules = data.frame(labels(tree))[1][-1,]
@@ -610,7 +610,7 @@ ui <- dashboardPage(
 )
 
 server <- function(input, output, session) {
-  # set.seed(122)
+  # set.seed(100)
   # histdata <- rnorm(500)
   # output$randomForestPlot <- renderPlot(hist(histdata, plot = FALSE), "plot1")
   # decisionTree <- createTree(train, observe(input$minSplit), observe(input$minBucket), observe(input$maxDepth))

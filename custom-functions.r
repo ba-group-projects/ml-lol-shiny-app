@@ -43,33 +43,16 @@ preprocess.data<-function(lol.ori){
   return(lol)
 }
 
-train.dt.basic<-function(data){
-
-  label.var = factor(data$blueWins)
-  # set.seed(100)
-  model = tree(label.var ~ ., data)
+get.dt.features<-function(model){
+  rpart.rules = data.frame(rpart:::labels.rpart(model))[1][-1,]
   
-  return(model)
+  imp.features = c()
+  for (feature in str_extract_all(rpart.rules, "\\w*")) {
+    print(feature[1])
+    imp.features = rbind(imp.features, feature[1])
+  }
+  return(unique(imp.features))
 }
-
-train.dt.pruned<-function(input){
-  return(input * 1)
-}
-
-# - Random Forest
-#   - train
-#     - input
-#       - training size
-#       - Number of trees
-#     - output
-#       - Variable importance
-#       - Accuracy(trainning,testing)
-#   - predict
-#     - input
-#       - ???
-#     - output
-#       - prediction
-#       - accuracy
 
 train.rf.tuned<-function(ntree, train, test){
   fitcontrol.rf = trainControl(method = "repeatedcv", number = 10, repeats = 2)

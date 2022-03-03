@@ -7,6 +7,7 @@ library(corrplot)
 library(rattle)
 library(rpart)
 library(rpart.plot)
+library(stringr)
 
 source("custom-functions.r")
 
@@ -85,38 +86,52 @@ test = train.test[[2]]
 # BASIC DECISION TREE #
 #######################
 
-### tree library
-set.seed(100)
-lol.dt.basic = tree(blueWins ~ . , train)
-summary(lol.dt.basic)
-# have a look at the details of the tree
-lol.dt.basic
-# # plot the tree
-plot(lol.dt.basic)
-text(lol.dt.basic,pretty=1)
-
-# performance measure using confusion matrix
-pred.dt.basic = predict(lol.dt.basic, newdata = test[,-ncol(test)], type = "class")
-confusionMatrix(pred.dt.basic, test[,ncol(test)])
-
-test.func = train.dt.basic(train)
-plot(test.func)
-text(test.func,pretty=1)
-
-# ### rpart library
+# ### tree library
 # set.seed(100)
-# lol.dt.basic2 = rpart(blueWins ~ . , train, method = 'class', cp = 0)
-# summary(lol.dt.basic2)
+# lol.dt.basic = tree(blueWins ~ . , train)
+# summary(lol.dt.basic)
 # # have a look at the details of the tree
-# lol.dt.basic2
+# lol.dt.basic
 # # # plot the tree
-# # plot(lol.dt.basic2)
-# # text(lol.dt.basic2,pretty=2)
-# rpart.plot(lol.dt.basic2, box.palette="BuRd")
+# plot(lol.dt.basic)
+# text(lol.dt.basic,pretty=1)
 # 
 # # performance measure using confusion matrix
-# pred.dt.basic2 = predict(lol.dt.basic2, newdata = test[,-ncol(test)],type="class")
-# confusionMatrix(pred.dt.basic2, test[,ncol(test)])
+# pred.dt.basic = predict(lol.dt.basic, newdata = test[,-ncol(test)], type = "class")
+# confusionMatrix(pred.dt.basic, test[,ncol(test)])
+# 
+# test.func = train.dt.basic(train)
+# plot(test.func)
+# text(test.func,pretty=1)
+
+### rpart library
+set.seed(100)
+lol.dt.basic2 = rpart(blueWins ~ . , train, method = 'class', cp=0)
+summary(lol.dt.basic2)
+# have a look at the details of the tree
+lol.dt.basic2
+
+imp.features = get.dt.features(lol.dt.basic2)
+imp.features
+
+# imp.features1 = data.frame(rpart:::labels.rpart(lol.dt.basic2))[1][-1,]
+# 
+# imp.features2 = c()
+# for (value in str_extract_all(imp.features1, "\\w*")) {
+#   print(value[1])
+#   imp.features2 = rbind(imp.features2, value[1])
+# }
+# imp.features2 = unique(imp.features2)
+# imp.features2
+
+# # plot the tree
+# plot(lol.dt.basic2)
+# text(lol.dt.basic2,pretty=2)
+rpart.plot(lol.dt.basic2, box.palette="BuRd")
+
+# performance measure using confusion matrix
+pred.dt.basic2 = predict(lol.dt.basic2, newdata = test[,-ncol(test)],type="class")
+confusionMatrix(pred.dt.basic2, test[,ncol(test)])
 
 ########################
 # PRUNED DECISION TREE #
@@ -200,7 +215,10 @@ mean(pred.train.rf.tuned==train[,ncol(train)])
 
 pred.test.rf.tuned = predict(lol.rf.tuned, newdata = test[,-ncol(test)])
 mean(pred.test.rf.tuned==test[,ncol(test)])
-confusionMatrix(pred.rf.tuned, test[,ncol(test)])
+
+confusionMatrix(pred.train.rf.tuned, train[,-ncol(train)])
+
+confusionMatrix(pred.test.rf.tuned, test[,ncol(test)])
 
 set.seed(6)
 lol.rf.tuned.check = train.rf.tuned(500, train, test)

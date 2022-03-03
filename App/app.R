@@ -690,7 +690,7 @@ server <- function(input, output, session) {
   # output$randomForestPlot <- renderPlot(hist(histdata, plot = FALSE), "plot1")
   # decisionTree <- createTree(train, observe(input$minSplit), observe(input$minBucket), observe(input$maxDepth))
   decisionTree <- eventReactive(
-    eventExpr = input$trainModel,
+    eventExpr = input$trainDtModel,
     {
       train.test <- train.test.split(lol, input$splitSize / 100)
       train <- train.test[[1]]

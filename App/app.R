@@ -12,7 +12,9 @@ library(rpart)
 library(rpart.plot)
 
 # read data
-setwd("~/OneDrive/Documents/MyOversea/Cass Study/machine learning/MTP/MTP1/machine-learning-gp1")
+# setwd("~/OneDrive/Documents/MyOversea/Cass Study/machine learning/MTP/MTP1/machine-learning-gp1")
+setwd("/Volumes/GoogleDrive-117044175360160401988/My Drive/github/machine-learning-gp1")
+
 lol.ori <- read.csv("high_diamond_ranked_10min.csv", header = TRUE)
 
 # summary of data
@@ -270,72 +272,79 @@ dashboardContent <-
                 "The default values we've put in should create a fairly safe",
                 "tree but try changing them if you're feeling adventurous."
               ),
-              br(),
-              h4("Split Size"),
+              br(),              
               helpText(
                 ""
               ),
-              sliderInput(
-                inputId = "splitSize %",
-                label = '%', # label given in outer code
-                min = 0, # two is the smallest that could be split
-                max = 100, # chosen to not make the models too wild
-                value = 70 # defaults to not having an artifical minimum
-              ),
-              br(),
-              h4("Decision Tree"),
+              h4("Pick a Decision Tree"),
               helpText(
                 ""
               ),
-              radioButtons("custOpt", "", c("Customize", "Optimize"),inline = TRUE,width='100%'), #TODO change the space
-              br(),
-              h4("Minimum Split"),
-              helpText(
-                "If at a given node N is below this value, that node cannot",
-                "be split any further: it is a terminal node of the tree."
-              ),
-              sliderInput(
-                inputId = "minSplit",
-                label = NULL, # label given in outer code
-                min = 2, # two is the smallest that could be split
-                max = 10, # chosen to not make the models too wild
-                value = 2 # defaults to not having an artifical minimum
-              ),
-              br(),
-              h4("Minimum Bucket Size"),
-              helpText(
-                "If creating a given split would cause N₁ or N₂ to fall below",
-                "this minimum, then that split isn't made part of the",
-                "decision tree."
-              ),
-              sliderInput(
-                inputId = "minBucket",
-                label = NULL, # label given in outer code
-                min = 1, # can't have buckets of size zero
-                max = 30, # rpart default is minbucket = 3*minsplit
-                value = 1 # defaults to not having an artifical minimum
-              ),
-              br(),
-              h4("Maximum Tree Depth"),
-              helpText(
-                "Control the maximum depth that the decision tree can reach.",
-                "Note that, depending on what features are being used and the",
-                "values of the other parameters, you may end up with a tree",
-                "much shallower than the maximum."
-              ),
-              sliderInput(
-                inputId = "maxDepth",
-                label = NULL, # label given in outer code
-                min = 2, # a min of 2 allows for at least one split
-                max = 30, # rpart can't do 31+ depth on 32-bit machines
-                value = 5 # chosen to not make the default too wild
-              ),
+              # radioButtons("custOpt", "", c("Customize", "Optimize"),inline = TRUE,width='100%'), #TODO change the space
+              radioButtons("custOpt", "", c("Optmized Tree", "Grow your own Tree!"),inline = TRUE,width='100%'),
               br(),
               actionButton(
                 inputId = "trainModel",
                 label = "Train Model",
-                class = "btn-primary" # makes it blue!
-              )
+                class = "btn-danger"#"btn-primary" # makes it blue!
+              ),
+              br(),
+              br(),
+              conditionalPanel(
+                condition = "input.custOpt == 'Grow your own Tree!'",
+                # box(
+                  h4("Split Size"),
+                  sliderInput(
+                    inputId = "splitSize %",
+                    label = '%', # label given in outer code
+                    min = 0, # two is the smallest that could be split
+                    max = 100, # chosen to not make the models too wild
+                    value = 70 # defaults to not having an artifical minimum
+                  ),
+                  br(),
+                  h4("Minimum Split"),
+                  helpText(
+                    "If at a given node N is below this value, that node cannot",
+                    "be split any further: it is a terminal node of the tree."
+                  ),
+                  sliderInput(
+                    inputId = "minSplit",
+                    label = NULL, # label given in outer code
+                    min = 2, # two is the smallest that could be split
+                    max = 10, # chosen to not make the models too wild
+                    value = 2 # defaults to not having an artifical minimum
+                  ),
+                  br(),
+                  h4("Minimum Bucket Size"),
+                  helpText(
+                    "If creating a given split would cause N₁ or N₂ to fall below",
+                    "this minimum, then that split isn't made part of the",
+                    "decision tree."
+                  ),
+                  sliderInput(
+                    inputId = "minBucket",
+                    label = NULL, # label given in outer code
+                    min = 1, # can't have buckets of size zero
+                    max = 30, # rpart default is minbucket = 3*minsplit
+                    value = 1 # defaults to not having an artifical minimum
+                  ),
+                  br(),
+                  h4("Maximum Tree Depth"),
+                  helpText(
+                    "Control the maximum depth that the decision tree can reach.",
+                    "Note that, depending on what features are being used and the",
+                    "values of the other parameters, you may end up with a tree",
+                    "much shallower than the maximum."
+                  ),
+                  sliderInput(
+                    inputId = "maxDepth",
+                    label = NULL, # label given in outer code
+                    min = 2, # a min of 2 allows for at least one split
+                    max = 30, # rpart can't do 31+ depth on 32-bit machines
+                    value = 5 # chosen to not make the default too wild
+                  )
+                # )
+              )              
             )
           )
         ),

@@ -159,9 +159,9 @@ get.dt.features<-function(tree){
   imp.features = c()
   for (feature in str_extract_all(rpart.rules, "\\w*")) {
     # print(feature[1])
-    imp.features = rbind(imp.features, feature[1])
+    imp.features <- rbind(imp.features, feature[1])
   }
-  output = unique(imp.features)
+  output <- unique(imp.features)
   return(paste(output))
 }
 
@@ -256,7 +256,11 @@ headerbar <- dashboardHeader(
 # sidebar
 sidebar <- dashboardSidebar(
   sidebarMenu(
-    menuItem("Introduction", tabName = "introduction", icon = icon("dashboard")),
+    menuItem("Introduction",
+      tabName = "introduction", icon = icon("dashboard"),
+      menuItem("Classification model", tabName = "classificationModel"),
+      menuItem("Dataset", tabName = "dataset")
+    ),
     # menuItem("Model Selection",
     #   icon = icon("tree"), tabName = "modelSelection",
 
@@ -269,6 +273,9 @@ sidebar <- dashboardSidebar(
       tabName = "randomForest", icon = icon("cubes"),
       menuItem("Train", tabName = "randomForestTrain"),
       menuItem("Predict", tabName = "randomForestPredict")
+    ),
+    menuItem("FAQ",
+      tabName = "faq", icon = icon("question-circle")
     )
     # menuItem("Prediction", tabName = "prediction", icon = icon("clock")),
     # menuItem("Lexicon", tabName = "lexicon", icon = icon("table")),
@@ -290,40 +297,78 @@ dashboardContent <-
     #   )
     # ),
     tabItems(
-      tabItem(tabName = "introduction", fluidRow(fluidRow(HTML('<!DOCTYPE html>
-<html>  
-
-<div style="margin: 10%">
+      tabItem(tabName = "classificationModel", fluidRow(fluidRow(HTML('<!DOCTYPE html>
+<html>
+<div style="margin-top:-50px">
+<img src="forest3.png" style="max-height:20px overflow:hidden">
+</div>
+<div style="margin-left:10%;margin-right:15%;margin-top:4%;background:white;padding:40px ">
 <h2>
     Introduction:
 </h2>
 <br>
 <p style="font-size:16px">
     <p style="font-size:16px">The aim of this app is to explain how decision trees and random forest works in classification problems. We aim to showcase this by creating a classification model to predict the winner of League of Legends, an online video game. Users will be able to play around with the model’s hyperparameters to see its effect on the model performance.
-    
+
     </p>
     <br>
-    
-    
+
+
     <h3>What Is A Decision tree</h3>
     <br>
     <br>
     <p style="font-size:16px">Decision trees perform a classification on data in a hierarchical structure by observing the key differentiating features on the classification data. The path is segregated into binary “yes”, “no” decisions at each level leading to another question and ultimately the result. Each question is regarded as a node, with the split becoming “branches” and the “leaves” representing the end of each point.  </p>
     <br>
-    <div align="center">
-    <img src="randomforest.gif" width=500>
-    </div>
-        <br>
+    <br>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/7VeUPuFGJHk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <br>
+    <br>
     <h3>What Is A Random Forest</h3>
     <br>
     <br>
     <p style="font-size:16px">
-    Random forests is a modified approach to bagging (bootstrap sampling that averages the aggregate of individual models), in which an algorithm inspects a random subset of features in the data at each split in the learning process, rather than all features seen in bagging. This is done to avoid correlation between the trees. Using multiple bootstrapped samples of the original dataset reduces variance, resulting in lower overfitting. 
+    Random forests is a modified approach to bagging (bootstrap sampling that averages the aggregate of individual models), in which an algorithm inspects a random subset of features in the data at each split in the learning process, rather than all features seen in bagging. This is done to avoid correlation between the trees. Using multiple bootstrapped samples of the original dataset reduces variance, resulting in lower overfitting.
     </p>
+    <br>
+    <br>
+    <img src="randomforest.gif" width=500>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/J4Wdy0Wc_xQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <div align="center">
+    
+    </div>
+    <br>
+
+    
 </br>
 </div>
 </html>')))),
-      # tabItem(tabName = "decisionTreeTrain"),
+      tabItem(tabName = "dataset", fluidRow(fluidRow(HTML('<!DOCTYPE html>
+<html>
+<div style="margin-top:-50px">
+<img src="lolbanner3.png" style="max-height:100px;overflow:hidden;width:100%">
+</div>
+<div style="margin-left:10%;margin-right:15%;margin-top:4%;background:white;padding:20px ">
+<h2>
+    Dataset:
+</h2>
+<br>
+<p style="font-size:16px">
+    <p style="font-size:16px">The dataset comes from the first 10 minutes of 10,000 ranked games from League of Legends, a MOBA (multiplayer online battle arena) where 2 teams (blue and red) play against each other. Players in these ranked games are roughly the same level. The dataset contains 38 features (19 per team) containing information relating to score per minute (SPM), enemies killed, and rank. For this app, we will start with 37 predictors and the classification will be if the blue team wins. 
+    </p>
+    <br>
+  
+</br>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/0uyLRPmmYPk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+</div>
+ 
+</html>')))),
+
       tabItem(
         tabName = "decisionTreeTrain",
         fluidRow(
@@ -332,16 +377,13 @@ dashboardContent <-
               plotOutput("decisionTreeTrainPlot", height = 600)
             ),
             fluidRow(
+              height = 400,
               column(
                 6,
                 # plotOutput("decisionTreeTrainPlot1", height = 600))
-                h2("Training Results"),
+                h3("Training Results"),
                 helpText(
-                  "These are the measures of how good your model was",
-                  "when it was ran on the training data set. Recall from",
-                  "the lecture how we calculated each of these. Would",
-                  "you prefer a false positive or false negative in the",
-                  "context of spam detection?"
+                  "Training results measure how good the model was when it ran on the training data set. Using the slider will determine the percentage of the dataset that will be trained. Positive results reflect the blue team winning. "
                 ),
                 # training accuracy, true positive, and true negative
                 tagAppendAttributes(
@@ -355,13 +397,9 @@ dashboardContent <-
               ),
               column(
                 6,
-                h2("Test Results"),
+                h3("Test Results"),
                 helpText(
-                  "These are the measures of how good your model was",
-                  "when it was ran on the test data set. Recall what",
-                  "was said in lectures about how we interpret the",
-                  "differences between measures these and the measures",
-                  "from the training data."
+                  "These are the measures of how good your model was when it was ran on the test data set. The test result percentage is the difference of the training slider."
                 ),
                 # test accuracy, true positive, and true negative
                 tagAppendAttributes(
@@ -402,10 +440,11 @@ dashboardContent <-
             ),
             br(),
             br(),
-            h4("Split Size"),
+            h4("Split Size (%)"),
+
             sliderInput(
               inputId = "splitSize",
-              label = "%", # label given in outer code
+              label = "", # label given in outer code
               min = 0, # two is the smallest that could be split
               max = 100, # chosen to not make the models too wild
               value = 70 # defaults to not having an artifical minimum
@@ -415,45 +454,41 @@ dashboardContent <-
               condition = "input.custOpt == 'Grow your own Tree!'",
               # box(
               h4("Minimum Split"),
-              helpText(
-                "If at a given node N is below this value, that node cannot",
-                "be split any further: it is a terminal node of the tree."
-              ),
+            helpText("Specifies the minimum number of samples required to split an internal node. 
+            If the sample size of the node is smaller than this value, the node will not split any further. 
+            This will become the terminal node (leaf) of the tree."),
               sliderInput(
                 inputId = "minSplit",
                 label = NULL, # label given in outer code
                 min = 2, # two is the smallest that could be split
                 max = 10, # chosen to not make the models too wild
-                value = 2 # defaults to not having an artifical minimum
+                value = 3 # defaults to not having an artifical minimum
               ),
               br(),
               h4("Minimum Bucket Size"),
               helpText(
-                "If creating a given split would cause N₁ or N₂ to fall below",
-                "this minimum, then that split isn't made part of the",
-                "decision tree."
+               "The smallest number of samples allowed in a leaf node. The split will not happen if the number of samples in the node is less than the specified minimum bucket size.
+"
               ),
               sliderInput(
                 inputId = "minBucket",
                 label = NULL, # label given in outer code
                 min = 1, # can't have buckets of size zero
                 max = 30, # rpart default is minbucket = 3*minsplit
-                value = 1 # defaults to not having an artifical minimum
+                value = 4 # defaults to not having an artifical minimum
               ),
               br(),
               h4("Maximum Tree Depth"),
               helpText(
-                "Control the maximum depth that the decision tree can reach.",
-                "Note that, depending on what features are being used and the",
-                "values of the other parameters, you may end up with a tree",
-                "much shallower than the maximum."
+                "Control the maximum depth that the decision tree can reach. The deeper the tree, the more splits it can achieve, capturing more information about the dataset.
+"
               ),
               sliderInput(
                 inputId = "maxDepth",
                 label = NULL, # label given in outer code
                 min = 2, # a min of 2 allows for at least one split
-                max = 30, # rpart can't do 31+ depth on 32-bit machines
-                value = 5 # chosen to not make the default too wild
+                max = 5, # rpart can't do 31+ depth on 32-bit machines
+                value = 3 # chosen to not make the default too wild
               )
               # )
             )
@@ -506,11 +541,11 @@ dashboardContent <-
           ),
           box(
             h3("Predict which team would win!"),
-            span(textOutput("impFeatures"), style="color:#fff"),
+            span(textOutput("impFeatures"), style = "color:#fff"),
             actionButton(
               inputId = "dtModelPredict",
               label = "Predict Winner",
-              class = "btn-primary",#"btn-danger" # makes it blue!
+              class = "btn-primary", # "btn-danger" # makes it blue!
               style = "color: #fff"
             ),
             br(),
@@ -522,7 +557,7 @@ dashboardContent <-
             ),
             conditionalPanel(
               condition = "output.impFeatures.indexOf('blueGoldDiff') > -1",
-                sliderInput("blueGoldDiff", "Blue Gold Diff", -10000, 10000, 0)
+              sliderInput("blueGoldDiff", "Blue Gold Diff", -10000, 10000, 0)
             ),
             conditionalPanel(
               condition = "output.impFeatures.indexOf('blueCSPerMin') > -1",
@@ -546,7 +581,7 @@ dashboardContent <-
               radioButtons("redHeralds", "Red Heralds", c(0, 1))
               # sliderInput("redHeralds", "Red Heralds", 0, 1, 0)
             )
-                      
+
             # radioButtons("firstBlood", "First Blood", c("Blue", "Red")),
             # radioButtons("herald", "Herald", c("Blue", "Red")),
             # sliderInput("blueWardsPlaced", "Blue wards placed", 0, 60, 20),
@@ -561,10 +596,9 @@ dashboardContent <-
             # sliderInput("redTowersDestroyed", "Red Towers Destroyed", 0, 1, 1),
             # sliderInput("redTotalJungleMinionsKilled", "Red Total Jungle Minions Killed", 0, 80, 20),
             # sliderInput("redTotalGold", "Red Total Gold", -10000, 10000, 0)
-
           )
         )
-      )
+      ),
       #       tabItem(
       #         tabName = "lexicon",
       #         HTML('<!DOCTYPE html>
@@ -596,7 +630,36 @@ dashboardContent <-
       #   tabName = "introductionVideo",
       #   HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/0uyLRPmmYPk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
       # ),
+        tabItem(tabName = "dataset", fluidRow(fluidRow(HTML('
+        <!DOCTYPE html>
+          <html>
+          <div style="margin-top:-50px">
+          <img src="lolbanner3.png" style="max-height:100px;overflow:hidden;width:100%">
+          </div>
+          <div style="margin-left:10%;margin-right:15%;margin-top:4%;background:white;padding:20px ">
+          <h2>
+              Dataset:
+          </h2>
+          <br>
+          <p style="font-size:16px">
+              <p style="font-size:16px">The dataset comes from the first 10 minutes of 10,000 ranked games from League of Legends, a MOBA (multiplayer online battle arena) where 2 teams (blue and red) play against each other. Players in these ranked games are roughly the same level. The dataset contains 38 features (19 per team) containing information relating to score per minute (SPM), enemies killed, and rank. For this app, we will start with 37 predictors and the classification will be if the blue team wins. 
+              </p>
+              <br>
+            
+          </br>
+          <iframe width="560" height="315" src="https://www.youtube.com/embed/0uyLRPmmYPk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+
+          </div>
+          
+          </html>'))))
+
     ),
+
     tags$head(tags$style(HTML("
             /* logo */
             .skin-blue .main-header .logo {
@@ -627,16 +690,16 @@ server <- function(input, output, session) {
   # output$randomForestPlot <- renderPlot(hist(histdata, plot = FALSE), "plot1")
   # decisionTree <- createTree(train, observe(input$minSplit), observe(input$minBucket), observe(input$maxDepth))
   decisionTree <- eventReactive(
+    eventExpr = input$trainModel,
+    {
+      train.test <- train.test.split(lol, input$splitSize / 100)
+      train <- train.test[[1]]
+      test <- train.test[[2]]
 
-    eventExpr = input$trainDtModel, {
-      train.test = train.test.split(lol, input$splitSize/100)
-      train = train.test[[1]]
-      test = train.test[[2]]
-      
       if (input$custOpt == "Optimized Tree") {
-        valueExpr = createTree(train)
-      }else{
-        valueExpr = createTree(train, input$minSplit, input$minBucket, input$maxDepth, optimise = FALSE)
+        valueExpr <- createTree(train)
+      } else {
+        valueExpr <- createTree(train, input$minSplit, input$minBucket, input$maxDepth, optimise = FALSE)
         # print(input$custOpt)
         # print(valueExpr)
       }
@@ -644,13 +707,13 @@ server <- function(input, output, session) {
   )
 
   output$decisionTreeTrainPlot_ <- renderPlot(
-    rpart.plot(decisionTree(), box.palette = "BuRd", roundint=FALSE)
+    rpart.plot(decisionTree(), box.palette = "BuRd", roundint = FALSE)
   )
   output$decisionTreeTrainPlot <- renderPlot(
-    rpart.plot(decisionTree(), box.palette = "BuRd", roundint=FALSE)
+    rpart.plot(decisionTree(), box.palette = "BuRd", roundint = FALSE)
   )
 
-  output$impFeatures = renderText(get.dt.features(decisionTree()))
+  output$impFeatures <- renderText(get.dt.features(decisionTree()))
 
   ##############################
   #### eventReactive############

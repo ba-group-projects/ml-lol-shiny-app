@@ -13,8 +13,8 @@ library(rpart.plot)
 library(stringr)
 
 # read data
-setwd("~/OneDrive/Documents/MyOversea/Cass Study/machine learning/MTP/MTP1/machine-learning-gp1")
-# setwd("/Volumes/GoogleDrive-117044175360160401988/My Drive/github/machine-learning-gp1")
+# setwd("~/OneDrive/Documents/MyOversea/Cass Study/machine learning/MTP/MTP1/machine-learning-gp1")
+setwd("/Volumes/GoogleDrive-117044175360160401988/My Drive/github/machine-learning-gp1")
 
 lol.ori <- read.csv("high_diamond_ranked_10min.csv", header = TRUE)
 
@@ -86,9 +86,9 @@ train.test.split <- function(data, p) {
   return(list(train, test))
 }
 
-###################################
-### >>> DECISION TREE <<< ###
-###################################
+    ###################################
+    ### >>> DECISION TREE <<< ###
+    ###################################
 
 createTree <- function(train_data, min_split = NULL, min_bucket = NULL, max_depth = NULL, optimise = TRUE) {
   # Takes a list of model variables (strings), a minimum split parameter
@@ -165,9 +165,9 @@ get.dt.features<-function(tree){
   return(paste(output))
 }
 
-###################################
-### >>> RANDOM FOREST <<< ###
-###################################
+    ###################################
+    ### >>> RANDOM FOREST <<< ###
+    ###################################
 train.rf.tuned <- function(ntree, train, test) {
   fitcontrol.rf <- trainControl(method = "repeatedcv", number = 10, repeats = 2)
   model <- train(train[, -ncol(train)], train[, ncol(train)],
@@ -189,9 +189,9 @@ predict.rf.tuned <- function(model, user.input) {
   prediction <- predict(model, user.input)
   return(prediction)
 }
-###################################
-### >>> PERFORMANCE MEASURE <<< ###
-###################################
+    ###################################
+    ### >>> PERFORMANCE MEASURE <<< ###
+    ###################################
 
 calcScores <- function(results) {
   # Takes a results dataframe as input and then calculates scores for
@@ -337,13 +337,13 @@ dashboardContent <-
                 ),
                 # training accuracy, true positive, and true negative
                 tagAppendAttributes(
-                  textOutput("training_scores"),
+                  textOutput("dt_train_scores"),
                   # allow linebreaks between scores, larger font here
                   style = "white-space: pre-wrap; font-size: 17px;"
                 ),
                 br(),
                 # training results table matches layout from presentation
-                tableOutput("training_table")
+                tableOutput("dt_train_table")
               ),
               column(
                 6,
@@ -357,13 +357,13 @@ dashboardContent <-
                 ),
                 # test accuracy, true positive, and true negative
                 tagAppendAttributes(
-                  textOutput("test_scores"),
+                  textOutput("dt_test_scores"),
                   # allow linebreaks between scores, larger font here
                   style = "white-space: pre-wrap; font-size: 17px;"
                 ),
                 br(),
                 # training results table matches layout from presentation
-                tableOutput("test_table")
+                tableOutput("dt_test_table")
               )
             )
           ),
@@ -387,7 +387,7 @@ dashboardContent <-
             radioButtons("custOpt", "", c("Optimized Tree", "Grow your own Tree!"), inline = TRUE, width = "100%"),
             br(),
             actionButton(
-              inputId = "trainModel",
+              inputId = "trainDtModel",
               label = "Train Model",
               class = "btn-primary", # "btn-danger" # makes it blue!
               style = "color: #fff"
@@ -465,7 +465,33 @@ dashboardContent <-
       tabItem(
         tabName = "decisionTreePredict",
         fluidRow(
-          box(plotOutput("decisionTreeTrainPlot_", height = 600)),
+          box(
+            fluidRow(
+              plotOutput("decisionTreeTrainPlot_", height = 600)
+            ),
+            fluidRow(
+              column(
+                6,
+                h2("Decision Tree Performance"),
+                helpText(
+                  "These are the measures of how good your model was",
+                  "when it was ran on the test data set. Recall what",
+                  "was said in lectures about how we interpret the",
+                  "differences between measures these and the measures",
+                  "from the training data."
+                ),
+                # test accuracy, true positive, and true negative
+                tagAppendAttributes(
+                  textOutput("dt_test_scores_"),
+                  # allow linebreaks between scores, larger font here
+                  style = "white-space: pre-wrap; font-size: 17px;"
+                ),
+                br(),
+                # training results table matches layout from presentation
+                tableOutput("dt_test_table_")
+              )
+            )
+          ),
           box(
             h3("Predict which team would win!"),
             span(textOutput("impFeatures"), style="color:#fff"),
@@ -479,7 +505,8 @@ dashboardContent <-
             br(),
             conditionalPanel(
               condition = "output.impFeatures.indexOf('blueFirstBlood') > -1",
-              sliderInput("blueFirstBlood", "Blue First Blood", 0, 1, 0)
+              radioButtons("blueFirstBlood", "Blue First Blood", c(0, 1))
+              # sliderInput("blueFirstBlood", "Blue First Blood", 0, 1, 0, step=1)
             ),
             conditionalPanel(
               condition = "output.impFeatures.indexOf('blueGoldDiff') > -1",
@@ -487,23 +514,25 @@ dashboardContent <-
             ),
             conditionalPanel(
               condition = "output.impFeatures.indexOf('blueCSPerMin') > -1",
-              sliderInput("blueCSPerMin", "Blue CS Per Min", 0, 100, 0)
+              sliderInput("blueCSPerMin", "Blue CS Per Min", 0, 40, 0)
             ),
             conditionalPanel(
               condition = "output.impFeatures.indexOf('blueEliteMonsters') > -1",
-              sliderInput("blueEliteMonsters", "Blue Elite Monsters", 0, 2, 0)
+              radioButtons("blueEliteMonsters", "Blue Elite Monsters", c(0, 1, 2))
+              # sliderInput("blueEliteMonsters", "Blue Elite Monsters", 0, 2, 0)
             ),
             conditionalPanel(
               condition = "output.impFeatures.indexOf('blueTotalJungleMinionsKilled') > -1",
-              sliderInput("blueTotalJungleMinionsKilled", "Blue Total Jungle Minions Killed", -10000, 10000, 0)
+              sliderInput("blueTotalJungleMinionsKilled", "Blue Total Jungle Minions Killed", 0, 150, 50)
             ),
             conditionalPanel(
               condition = "output.impFeatures.indexOf('redTotalJungleMinionsKilled') > -1",
-              sliderInput("redTotalJungleMinionsKilled", "Red Total Jungle Minions Killed", 0, 200, 0)
+              sliderInput("redTotalJungleMinionsKilled", "Red Total Jungle Minions Killed", 0, 150, 50)
             ),
             conditionalPanel(
               condition = "output.impFeatures.indexOf('redHeralds') > -1",
-              sliderInput("redHeralds", "Red Heralds", 0, 1, 0)
+              radioButtons("redHeralds", "Red Heralds", c(0, 1))
+              # sliderInput("redHeralds", "Red Heralds", 0, 1, 0)
             )
                       
             # radioButtons("firstBlood", "First Blood", c("Blue", "Red")),
@@ -581,13 +610,13 @@ ui <- dashboardPage(
 )
 
 server <- function(input, output, session) {
-  set.seed(122)
+  # set.seed(122)
   # histdata <- rnorm(500)
   # output$randomForestPlot <- renderPlot(hist(histdata, plot = FALSE), "plot1")
   # decisionTree <- createTree(train, observe(input$minSplit), observe(input$minBucket), observe(input$maxDepth))
   decisionTree <- eventReactive(
 
-    eventExpr = input$trainModel, {
+    eventExpr = input$trainDtModel, {
       train.test = train.test.split(lol, input$splitSize/100)
       train = train.test[[1]]
       test = train.test[[2]]
@@ -615,14 +644,41 @@ server <- function(input, output, session) {
   ##############################
 
   # regenerate training results every time createModel is pressed
-  training_results <- eventReactive(
-    eventExpr = input$trainModel,
+  dt_train_results <- eventReactive(
+    eventExpr = input$trainDtModel,
     valueExpr = useTree(decisionTree(), train)
   )
-  test_results <- eventReactive(
-    eventExpr = input$trainModel,
+  dt_test_results <- eventReactive(
+    eventExpr = input$trainDtModel,
     valueExpr = useTree(decisionTree(), test)
   )
+
+  output$dt_train_scores <- renderText(
+    paste(calcScores(dt_train_results()), collapse = "\n")
+  )
+  output$dt_test_scores <- renderText(
+    paste(calcScores(dt_test_results()), collapse = "\n")
+  )
+  output$dt_train_table <- renderTable(
+    resultsTable(dt_train_results()),
+    align = "lccc", # left-align first column, centre rest
+    striped = TRUE
+  )
+  output$dt_test_table <- renderTable(
+    resultsTable(dt_test_results()),
+    align = "lccc", # left-align first column, centre rest
+    striped = TRUE
+  )
+
+  output$dt_test_scores_ <- renderText(
+    paste(calcScores(dt_test_results()), collapse = "\n")
+  )
+
+  output$dt_test_table_ <- renderTable(
+    resultsTable(dt_test_results()),
+    align = "lccc", # left-align first column, centre rest
+    striped = TRUE
+  ) 
 
   ##############################
   #### observeEvent############
@@ -645,22 +701,7 @@ server <- function(input, output, session) {
   #   }
   # })
 
-  output$training_scores <- renderText(
-    paste(calcScores(training_results()), collapse = "\n")
-  )
-  output$test_scores <- renderText(
-    paste(calcScores(test_results()), collapse = "\n")
-  )
-  output$training_table <- renderTable(
-    resultsTable(training_results()),
-    align = "lccc", # left-align first column, centre rest
-    striped = TRUE
-  )
-  output$test_table <- renderTable(
-    resultsTable(test_results()),
-    align = "lccc", # left-align first column, centre rest
-    striped = TRUE
-  )
+
   # height = 1000,
   # width = 1000,
   # xlab = "",

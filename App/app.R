@@ -412,43 +412,42 @@ dashboardContent <-
               )              
             )
           )
-        ),
-        # ), #FIXME
-        tabItem(
-          tabName = "randomForest",
-          fluidRow(
-            box(plotOutput("randomForestPlot", height = 1000))
-          )
-        ),
+      ),
+      tabItem(
+        tabName = "randomForest",
+        fluidRow(
+          box(plotOutput("randomForestPlot", height = 1000))
+        )
+      ),
         # TODO number of trees; randomize
         ##############################
         # prediction interaction part
         ##############################
-        tabItem(
-          tabName = "decisionTreePredict",
-          fluidRow(
-            box(plotOutput("plot1", height = 2500)),
-            box(
-              title = "Controls",
-              # radioButtons("firstBlood", "First Blood", c("Blue", "Red")),
-              # radioButtons("herald", "Herald", c("Blue", "Red")),
-              # sliderInput("blueWardsPlaced", "Blue wards placed", 0, 60, 20),
-              # sliderInput("blueWardsDestroyed", "Red wards placed", 0, 120, 20),
-              # sliderInput("blueELiteMonsters", "Blue Elite Monsters", 0, 2, 1),
-              # sliderInput("blueTowersDestroyed", "Blue Towers Destroyed", 0, 1, 1),
-              # sliderInput("blueTotalJungleMinionsKilled", "Blue Total Jungle Minions Killed", 0, 80, 20),
-              # sliderInput("blueTotalGold", "Blue Total Gold", -10000, 10000, 0),
-              # sliderInput("blueMinionKillsPerMin", "Blue Minion Kills Per Min", 10, 30, 20),
-              # sliderInput("redWardsPlaced", "Red wards placed", 0, 60, 20),
-              # sliderInput("redWardsPlaced", "Red wards placed", 0, 60, 20),
-              # sliderInput("redTowersDestroyed", "Red Towers Destroyed", 0, 1, 1),
-              # sliderInput("redTotalJungleMinionsKilled", "Red Total Jungle Minions Killed", 0, 80, 20),
-              # sliderInput("redTotalGold", "Red Total Gold", -10000, 10000, 0)
-              div(id="placeholder"),
-              actionButton("addLine", "Add Line")
-            )
+      tabItem(
+        tabName = "decisionTreePredict",
+        fluidRow(
+          box(plotOutput("decisionTreeTrainPlot_", height = 600)),
+          box(
+            title = "Controls",
+            # radioButtons("firstBlood", "First Blood", c("Blue", "Red")),
+            # radioButtons("herald", "Herald", c("Blue", "Red")),
+            # sliderInput("blueWardsPlaced", "Blue wards placed", 0, 60, 20),
+            # sliderInput("blueWardsDestroyed", "Red wards placed", 0, 120, 20),
+            # sliderInput("blueELiteMonsters", "Blue Elite Monsters", 0, 2, 1),
+            # sliderInput("blueTowersDestroyed", "Blue Towers Destroyed", 0, 1, 1),
+            # sliderInput("blueTotalJungleMinionsKilled", "Blue Total Jungle Minions Killed", 0, 80, 20),
+            # sliderInput("blueTotalGold", "Blue Total Gold", -10000, 10000, 0),
+            # sliderInput("blueMinionKillsPerMin", "Blue Minion Kills Per Min", 10, 30, 20),
+            # sliderInput("redWardsPlaced", "Red wards placed", 0, 60, 20),
+            # sliderInput("redWardsPlaced", "Red wards placed", 0, 60, 20),
+            # sliderInput("redTowersDestroyed", "Red Towers Destroyed", 0, 1, 1),
+            # sliderInput("redTotalJungleMinionsKilled", "Red Total Jungle Minions Killed", 0, 80, 20),
+            # sliderInput("redTotalGold", "Red Total Gold", -10000, 10000, 0)
+            div(id="placeholder"),
+            actionButton("addLine", "Add Line")
           )
         )
+      )
         #       tabItem(
         #         tabName = "lexicon",
         #         HTML('<!DOCTYPE html>
@@ -480,7 +479,7 @@ dashboardContent <-
         #   tabName = "introductionVideo",
         #   HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/0uyLRPmmYPk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
         # ),
-      ),
+    ),
       tags$head(tags$style(HTML("
             /* logo */
             .skin-blue .main-header .logo {
@@ -490,7 +489,7 @@ dashboardContent <-
     #         .box {margin-top: 2px;margin-left: 0px; margin-right: 0px; margin-bottom:2px;padding:-10px};
     # div {padding: 0 !important;}
                                   ")))
-    )
+  )
 
 
 ############################################################
@@ -525,7 +524,7 @@ server <- function(input, output, session) {
     }}
     
   )
-  output$decisionTreeTrainPlot1 <- renderPlot(
+  output$decisionTreeTrainPlot_ <- renderPlot(
     rpart.plot(decisionTree(), box.palette = "BuRd")
   )
   output$decisionTreeTrainPlot <- renderPlot(

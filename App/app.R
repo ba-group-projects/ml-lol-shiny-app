@@ -18,7 +18,7 @@ setwd("/Volumes/GoogleDrive-117044175360160401988/My Drive/github/machine-learni
 lol.ori <- read.csv("high_diamond_ranked_10min.csv", header = TRUE)
 
 # summary of data
-str(lol.ori)
+# str(lol.ori)
 summary(lol.ori)
 
 # pre-process data
@@ -74,7 +74,7 @@ train <- lol[train.index, ]
 test <- lol[-train.index, ]
 
 
-createTree <- function(train_data, min_split, min_bucket, max_depth) {
+createTree <- function(train_data, min_split=NULL, min_bucket=NULL, max_depth=NULL, optimise=TRUE) {
   # Takes a list of model variables (strings), a minimum split parameter
   # (int), a minimum bucket size parameter (int), and a maximum tree depth
   # parameter (int) as inputs and then returns an rpart classification tree
@@ -82,7 +82,17 @@ createTree <- function(train_data, min_split, min_bucket, max_depth) {
   # create an rpart compatible formula for the model from the chosen vars
   # f <- paste("blueWins ~ ", paste(model_vars, collapse = " + "))
   # rpart is performs the split calculations and returns the tree
-  tree <- rpart(
+  if (optimise == TRUE) {
+    set.seed(100)
+    tree <- rpart(
+      # as.formula(f),
+      "blueWins ~ .",
+      method = "class", # sets it up as a classification problem
+      data = train_data,
+      parms = list(split = "gini"))
+  }else{
+    set.seed(100)
+    tree <- rpart(
     # as.formula(f),
     "blueWins ~ .",
     method = "class", # sets it up as a classification problem
@@ -92,7 +102,7 @@ createTree <- function(train_data, min_split, min_bucket, max_depth) {
     minbucket = min_bucket,
     maxdepth = max_depth,
     cp = 0 # complexity parameter, at zero prevents pruning on branches
-  )
+  )} 
 
   return(tree)
 }
@@ -281,19 +291,17 @@ dashboardContent <-
                 ""
               ),
               # radioButtons("custOpt", "", c("Customize", "Optimize"),inline = TRUE,width='100%'), #TODO change the space
-              radioButtons("custOpt", "", c("Optmized Tree", "Grow your own Tree!"),inline = TRUE,width='100%'),
+              radioButtons("custOpt", "", c("Optimized Tree", "Grow your own Tree!"),inline = TRUE,width='100%'),
               br(),
               actionButton(
                 inputId = "trainModel",
                 label = "Train Model",
-                class = "btn-danger"#"btn-primary" # makes it blue!
+                class = "btn-primary",#"btn-danger" # makes it blue!
+                style = "color: #fff"
               ),
               br(),
               br(),
-              conditionalPanel(
-                condition = "input.custOpt == 'Grow your own Tree!'",
-                # box(
-                  h4("Split Size"),
+              h4("Split Size"),
                   sliderInput(
                     inputId = "splitSize %",
                     label = '%', # label given in outer code
@@ -301,7 +309,10 @@ dashboardContent <-
                     max = 100, # chosen to not make the models too wild
                     value = 70 # defaults to not having an artifical minimum
                   ),
-                  br(),
+              br(),
+              conditionalPanel(
+                condition = "input.custOpt == 'Grow your own Tree!'",
+                # box(
                   h4("Minimum Split"),
                   helpText(
                     "If at a given node N is below this value, that node cannot",
@@ -444,7 +455,15 @@ server <- function(input, output, session) {
   # decisionTree <- createTree(train, observe(input$minSplit), observe(input$minBucket), observe(input$maxDepth))
   decisionTree <- eventReactive(
     eventExpr = input$trainModel,
-    valueExpr = createTree(train, input$minSplit, input$minBucket, input$maxDepth)
+    
+    if (input$custOpt == "Optimized Tree") {
+      valueExpr = createTree(train)
+    }else{
+      valueExpr = createTree(train, input$minSplit, input$minBucket, input$maxDepth, optimise = FALSE)
+      print(input$custOpt)
+      print(valueExpr)
+    }
+    
   )
   output$decisionTreeTrainPlot1 <- renderPlot(
     rpart.plot(decisionTree(), box.palette = "BuRd")

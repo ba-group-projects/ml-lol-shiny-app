@@ -535,7 +535,12 @@ dashboardContent <-
               ),
               column(
                 6,
-                textOutput("dtPrediction")
+                span(textOutput("dtPrediction"),style='color:#111'),
+                conditionalPanel("output.dtPrediction == 'Blue'",
+                  span(img(src = "redteamwins.png", height = 100,)),
+                  ),
+                conditionalPanel("output.dtPrediction == 'Red'",span(img(src = "redteamwins.png", height = 100)))
+                # conditionalPanel("output.dtPrediction == 'red'",span(textOutput("dtPrediction"),style='color:#111'))
               )
             )
           ),

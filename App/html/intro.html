@@ -1,31 +1,30 @@
 <!DOCTYPE html>
-<html>  
-
-<div style="margin: 4%">
-<h2>
-    Introduction:
-</h2>
-<p>
-    <h3>Classification Model</h3>
+<html>
+<div style="margin-top:-50px">
+    <img src="lolbanner.png" style="max-height:100px;overflow:hidden;width:100%">
+</div>
+<div style="margin-left:10%;margin-right:15%;margin-top:4%;background:white;padding:20px ">
+    <h2>
+        Dataset:
+    </h2>
     <br>
-    <br>
-    <p>The aim of this app is to explain how decision trees and random forest works in classification problems. We aim to showcase this by creating a classification model to predict the winner of League of Legends, an online video game. Users will be able to play around with the model’s hyperparameters to see its effect on the model performance.
-    
+    <p style="font-size:16px">
+    <p style="font-size:16px">The dataset comes from the first 10 minutes of 10,000 ranked games from League of Legends,
+        a MOBA (multiplayer online battle arena) where 2 teams (blue and red) play against each other. Players in these
+        ranked games are roughly the same level. The dataset contains 38 features (19 per team) containing information
+        relating to score per minute (SPM), enemies killed, and rank. For this app, we will start with 37 predictors and
+        the classification will be if the blue team wins.
     </p>
-    
-    
-    <h3>What Is A Decision tree</h3>
+    <br>
+
+    </br>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/0uyLRPmmYPk" title="YouTube video player"
+        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
     <br>
     <br>
-    Decision trees perform a classification on data in a hierarchical structure by observing the key differentiating features on the classification data. The path is segregated into binary “yes”, “no” decisions at each level leading to another question and ultimately the result. Each question is regarded as a node, with the split becoming “branches” and the “leaves” representing the end of each point.  
-    
-    <img src="randomforest.gif">
-    <h3>What Is A Random Forest</h3>
     <br>
     <br>
-    
-    Random forests is a modified approach to bagging (bootstrap sampling that averages the aggregate of individual models), in which an algorithm inspects a random subset of features in the data at each split in the learning process, rather than all features seen in bagging. This is done to avoid correlation between the trees. Using multiple bootstrapped samples of the original dataset reduces variance, resulting in lower overfitting. 
-     
-</br>
+    <br>
 </div>
 </html>

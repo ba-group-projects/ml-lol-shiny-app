@@ -1,11 +1,4 @@
 ############################################################
-###############   >>> Important!!!!!!!! ####################
-############################################################
-# set the working directory according to your own path
-# setwd("your path")
-
-
-############################################################
 ################ Import the shiny package ##################
 ############################################################
 library(shinydashboard)
@@ -360,13 +353,38 @@ dashboardContent <-
             </h2>
             <br>
             <p style="font-size:16px">
-            <p style="font-size:16px">The dataset comes from the first 10 minutes of 10,000 ranked games from League of Legends,
-                a MOBA (multiplayer online battle arena) where 2 teams (blue and red) play against each other. Players in these
-                ranked games are roughly the same level. The dataset contains 38 features (19 per team) containing information
-                relating to score per minute (SPM), enemies killed, and rank. For this app, we will start with 37 predictors and
-                the classification will be if the blue team wins.
+            <p style="font-size:16px">
+            The dataset comes from the first 10 minutes of 10,000 ranked games from League of Legends,
+            a MOBA (multiplayer online battle arena) where 2 teams (blue and red) play against each other. 
+            Players in these ranked games are roughly the same level. The dataset contains 38 features 
+            (19 per team) containing information relating to score per minute (SPM), enemies killed, and rank.
+            For this app, the initial 37 predictors were reduced to 7 and the classification will be if the 
+            blue team wins. The 7 ultimate features, and their descriptions, are below:
             </p>
             <br>
+            <p>
+              <p style="font-size:16px">
+                <b>blueGoldDiff:</b> &nbsp;&nbsp;&nbsp;&nbsp;  Blue team gold difference compared to the enemy team
+              </p>
+              
+              <p style="font-size:16px">
+                <b>blueCSPerMin:</b> &nbsp;&nbsp;&nbsp;&nbsp;  Blue team CS (minions) per minute
+              </p>
+              <p style="font-size:16px">
+                <b>blueTotalJungleMinionsKilled:</b> &nbsp;&nbsp;&nbsp;&nbsp;  Blue team total jungle monsters killed
+              <p style="font-size:16px">
+                <b>redTotalJungleMinionsKilled:</b> &nbsp;&nbsp;&nbsp;&nbsp;  Red team total jungle monsters killed
+              </p>
+              <p style="font-size:16px">
+                <b>blueEliteMonsters:</b> &nbsp;&nbsp;&nbsp;&nbsp;  Number of elite monsters killed by the blue team (Dragons and Heralds)
+              </p>
+              <p>
+                <b>blueFirstBlood:</b> &nbsp;&nbsp;&nbsp;&nbsp;   First kill of the game. 1 if the blue team did the first kill, 0 otherwise
+              </p>
+              <p style="font-size:16px">
+                <b>redHeralds:</b> &nbsp;&nbsp;&nbsp;&nbsp;  Number of heralds killed by the red team
+              </p>
+            </p>
 
             </br>
             <iframe width="560" height="315" src="https://www.youtube.com/embed/0uyLRPmmYPk" title="YouTube video player"

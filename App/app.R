@@ -654,7 +654,7 @@ dashboardContent <-
             h3("Random Forest"),
             helpText(
               "These controls are for setting the hyperparameter values",
-              "which partly control the structure of the decision tree.",
+              "which partly control the structure of the random forest.",
               "The default values we've put in should create a fairly safe",
               "model but try changing them if you're feeling adventurous."
             ),

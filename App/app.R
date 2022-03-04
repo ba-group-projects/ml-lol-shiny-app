@@ -278,8 +278,8 @@ dashboardContent <-
               <p style="font-size:16px">
               <p style="font-size:16px">The aim of this app is to explain how decision trees and random forests are applied in
                   classification problems. We will illustrate this through classifying the winner of a match in League of Legends, 
-                  a popular online Multiplayer Online Battle Arena (MOBA) video game. The app allows users to train their own decision trees
-                  and random forests, asses the performance of their trained models, and predict the winner of a match.
+                  a popular Multiplayer Online Battle Arena (MOBA) video game. The app allows users to train their own decision trees
+                  and random forests, assess the performance of their trained models, and predict the winner of a match.
               </p>
               <br>
               <h3>What is a Decision Tree?</h3>
@@ -338,13 +338,14 @@ dashboardContent <-
               <br>
               <p style="font-size:16px">
               <p style="font-size:16px">
-              The dataset comes from the first 10 minutes of 10,000 ranked games from League of Legends,
-              a MOBA (multiplayer online battle arena) where 2 teams (blue and red) play against each other. 
+              The dataset comes from the first 10 minutes of 10,000 ranked games from League of Legends where 2 teams (blue and red) play against each other. 
               Players in these ranked games are roughly the same level. The dataset contains 38 features 
               (19 per team) containing information relating to score per minute (SPM), enemies killed, and rank.
               For this app, the initial 37 predictors were reduced to 7 and the classification will be if the 
-              blue team wins. The 7 ultimate features, and their descriptions, are below:
+              blue team wins.
               </p>
+              <br>
+                The 7 ultimate features, and their definitions, are below:
               <br>
               <p>
                 <p style="font-size:16px">
@@ -437,8 +438,8 @@ dashboardContent <-
             helpText(
               "These controls are for setting the hyperparameter values",
               "which partly control the structure of the decision tree.",
-              "The default values we've put in should create a fairly safe",
-              "tree but try changing them if you're feeling adventurous."
+              "The default values should create a fairly safe",
+              "model but try changing them if you're feeling adventurous."
             ),
             br(),
             helpText(
@@ -476,7 +477,7 @@ dashboardContent <-
               helpText(
               "Specifies the minimum number of samples required to split
                an internal node.If the sample size of the node is smaller than this 
-               value, the node will not split any further.This will become the 
+               value, the node will not split any further. This will become the 
                terminal node (leaf) of the tree."),
               sliderInput(
                 inputId = "minSplit",
@@ -655,7 +656,7 @@ dashboardContent <-
               "These controls are for setting the hyperparameter values",
               "which partly control the structure of the decision tree.",
               "The default values we've put in should create a fairly safe",
-              "tree but try changing them if you're feeling adventurous."
+              "model but try changing them if you're feeling adventurous."
             ),
             br(),
             actionButton(
@@ -765,7 +766,7 @@ dashboardContent <-
           </h3>
           <br>
           <p style="font-size:16px">
-              Accuracy score measures how many labels the model got right out of the total number of predictions.
+              Accuracy score measures how many labels the model classified correctly out of the total number of predictions.
               If the accuracy score is higher in the training dataset then the model is more likely to be overfitted.
           </p>
           <br>
@@ -774,7 +775,7 @@ dashboardContent <-
           </h3>
           <br>
           <p style="font-size:16px">
-              The probability that an event of blue team winning is predicted to win.
+              The probability that an event of blue team winning is predicted correctly.
           </p>
           <br>
           <h3>
@@ -782,7 +783,7 @@ dashboardContent <-
           </h3>
           <br>
           <p style="font-size:16px">
-              The probability that an event of blue team losing is predicted to lose.
+              The probability that an event of blue team losing is predicted correctly.
           </p>
           <br>
           <h3>

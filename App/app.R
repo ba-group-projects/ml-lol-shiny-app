@@ -524,7 +524,7 @@ dashboardContent <-
             fluidRow(
               column(
                 6,
-                h2("Decision Tree Performance"),
+                h3("Decision Tree Performance"),
                 helpText(
                   "These are the measures of how good your model was",
                   "when it was ran on the test data set. Recall what",
@@ -561,50 +561,32 @@ dashboardContent <-
             br(),
             conditionalPanel(
               condition = "output.impFeatures.indexOf('blueFirstBlood') > -1",
-              radioButtons("blueFirstBlood", "Blue First Blood", c(0, 1))
-              # sliderInput("blueFirstBlood", "Blue First Blood", 0, 1, 0, step=1)
+              radioButtons("blueFirstBloodDt", "Blue First Blood", c(0, 1))
             ),
             conditionalPanel(
               condition = "output.impFeatures.indexOf('blueGoldDiff') > -1",
-              sliderInput("blueGoldDiff", "Blue Gold Diff", -10000, 10000, 0)
+              sliderInput("blueGoldDiffDt", "Blue Gold Diff", -10000, 10000, 0)
             ),
             conditionalPanel(
               condition = "output.impFeatures.indexOf('blueCSPerMin') > -1",
-              sliderInput("blueCSPerMin", "Blue CS Per Min", 0, 40, 0)
+              sliderInput("blueCSPerMinDt", "Blue CS Per Min", 0, 40, 8)
             ),
             conditionalPanel(
               condition = "output.impFeatures.indexOf('blueEliteMonsters') > -1",
-              radioButtons("blueEliteMonsters", "Blue Elite Monsters", c(0, 1, 2))
-              # sliderInput("blueEliteMonsters", "Blue Elite Monsters", 0, 2, 0)
+              radioButtons("blueEliteMonstersDt", "Blue Elite Monsters", c(0, 1, 2))
             ),
             conditionalPanel(
               condition = "output.impFeatures.indexOf('blueTotalJungleMinionsKilled') > -1",
-              sliderInput("blueTotalJungleMinionsKilled", "Blue Total Jungle Minions Killed", 0, 150, 50)
+              sliderInput("blueTotalJungleMinionsKilledDt", "Blue Total Jungle Minions Killed", 0, 150, 50)
             ),
             conditionalPanel(
               condition = "output.impFeatures.indexOf('redTotalJungleMinionsKilled') > -1",
-              sliderInput("redTotalJungleMinionsKilled", "Red Total Jungle Minions Killed", 0, 150, 50)
+              sliderInput("redTotalJungleMinionsKilledDt", "Red Total Jungle Minions Killed", 0, 150, 50)
             ),
             conditionalPanel(
               condition = "output.impFeatures.indexOf('redHeralds') > -1",
-              radioButtons("redHeralds", "Red Heralds", c(0, 1))
-              # sliderInput("redHeralds", "Red Heralds", 0, 1, 0)
+              radioButtons("redHeraldsDt", "Red Heralds", c(0, 1))
             )
-
-            # radioButtons("firstBlood", "First Blood", c("Blue", "Red")),
-            # radioButtons("herald", "Herald", c("Blue", "Red")),
-            # sliderInput("blueWardsPlaced", "Blue wards placed", 0, 60, 20),
-            # sliderInput("blueWardsDestroyed", "Red wards placed", 0, 120, 20),
-            # sliderInput("blueELiteMonsters", "Blue Elite Monsters", 0, 2, 1),
-            # sliderInput("blueTowersDestroyed", "Blue Towers Destroyed", 0, 1, 1),
-            # sliderInput("blueTotalJungleMinionsKilled", "Blue Total Jungle Minions Killed", 0, 80, 20),
-            # sliderInput("blueTotalGold", "Blue Total Gold", -10000, 10000, 0),
-            # sliderInput("blueMinionKillsPerMin", "Blue Minion Kills Per Min", 10, 30, 20),
-            # sliderInput("redWardsPlaced", "Red wards placed", 0, 60, 20),
-            # sliderInput("redWardsPlaced", "Red wards placed", 0, 60, 20),
-            # sliderInput("redTowersDestroyed", "Red Towers Destroyed", 0, 1, 1),
-            # sliderInput("redTotalJungleMinionsKilled", "Red Total Jungle Minions Killed", 0, 80, 20),
-            # sliderInput("redTotalGold", "Red Total Gold", -10000, 10000, 0)
           )
         )
       ),
@@ -663,16 +645,6 @@ dashboardContent <-
               "tree but try changing them if you're feeling adventurous."
             ),
             br(),
-            # helpText(
-            #   ""
-            # ),
-            # h4("Pick a Decision Tree"),
-            # helpText(
-            #   ""
-            # ),
-            # radioButtons("custOpt", "", c("Customize", "Optimize"),inline = TRUE,width='100%'), #TODO change the space
-            # radioButtons("custOpt", "", c("Optimized Tree", "Grow your own Tree!"), inline = TRUE, width = "100%"),
-            # br(),
             actionButton(
               inputId = "trainRfModel",
               label = "Train Model",
@@ -698,52 +670,68 @@ dashboardContent <-
               value = 100, # defaults to not having an artifical minimum
               step = 100
             )
-#             conditionalPanel(
-#               condition = "input.custOpt == 'Grow your own Tree!'",
-#               # box(
-#               h4("Minimum Split"),
-#             helpText("Specifies the minimum number of samples required to split an internal node. 
-#             If the sample size of the node is smaller than this value, the node will not split any further. 
-#             This will become the terminal node (leaf) of the tree."),
-#               sliderInput(
-#                 inputId = "minSplit",
-#                 label = NULL, # label given in outer code
-#                 min = 2, # two is the smallest that could be split
-#                 max = 10, # chosen to not make the models too wild
-#                 value = 3 # defaults to not having an artifical minimum
-#               ),
-#               br(),
-#               h4("Minimum Bucket Size"),
-#               helpText(
-#                "The smallest number of samples allowed in a leaf node. The split will not happen if the number of samples in the node is less than the specified minimum bucket size.
-# "
-#               ),
-#               sliderInput(
-#                 inputId = "minBucket",
-#                 label = NULL, # label given in outer code
-#                 min = 1, # can't have buckets of size zero
-#                 max = 30, # rpart default is minbucket = 3*minsplit
-#                 value = 4 # defaults to not having an artifical minimum
-#               ),
-#               br(),
-#               h4("Maximum Tree Depth"),
-#               helpText(
-#                 "Control the maximum depth that the decision tree can reach. The deeper the tree, the more splits it can achieve, capturing more information about the dataset.
-# "
-#               ),
-#               sliderInput(
-#                 inputId = "maxDepth",
-#                 label = NULL, # label given in outer code
-#                 min = 2, # a min of 2 allows for at least one split
-#                 max = 5, # rpart can't do 31+ depth on 32-bit machines
-#                 value = 3 # chosen to not make the default too wild
-#               )
-#               # )
-#             )
           )
         )
       ),
-      # TODO number of trees; randomize
+      ##############################
+      # RF PREDICTION
+      ##############################
+      tabItem(
+        tabName = "randomForestPredict",
+        fluidRow(
+          box(
+            fluidRow(
+              plotOutput("rfPlot_", height = 600)
+            ),
+            fluidRow(
+              column(
+                6,
+                h3("Random Forest Performance"),
+                helpText(
+                  "These are the measures of how good your model was",
+                  "when it was ran on the test data set. Recall what",
+                  "was said in lectures about how we interpret the",
+                  "differences between measures these and the measures",
+                  "from the training data."
+                ),
+                # test accuracy, true positive, and true negative
+                tagAppendAttributes(
+                  textOutput("rf_test_scores_"),
+                  # allow linebreaks between scores, larger font here
+                  style = "white-space: pre-wrap; font-size: 17px;"
+                ),
+                br(),
+                # training results table matches layout from presentation
+                tableOutput("rf_test_table_")
+              ),
+              column(
+                6,
+                textOutput("rfPrediction")
+              )
+            )
+          ),
+          box(
+            h3("Predict which team would win!"),
+            br(),
+            actionButton(
+              inputId = "rfModelPredict",
+              label = "Predict Winner",
+              class = "btn-primary", # "btn-danger" # makes it blue!
+              style = "color: #fff"
+            ),
+            br(),
+            br(),
+
+            radioButtons("blueFirstBloodRf", "Blue First Blood", c(0, 1)),
+            sliderInput("blueGoldDiffRf", "Blue Gold Diff", -10000, 10000, 0),
+            sliderInput("blueCSPerMinRf", "Blue CS Per Min", 0, 40, 8),
+            radioButtons("blueEliteMonstersRf", "Blue Elite Monsters", c(0, 1, 2)),
+            sliderInput("blueTotalJungleMinionsKilledRf", "Blue Total Jungle Minions Killed", 0, 150, 50),
+            sliderInput("redTotalJungleMinionsKilledRf", "Red Total Jungle Minions Killed", 0, 150, 50),
+            radioButtons("redHeraldsRf", "Red Heralds", c(0, 1))
+          )
+        )
+      ),      
 
       #       tabItem(
       #         tabName = "lexicon",
@@ -901,13 +889,13 @@ server <- function(input, output, session) {
   output$dtPrediction <- eventReactive(
     eventExpr = input$dtModelPredict, {
       valueExpr = predict.winner(decisionTree(),       
-                                 data.frame(blueFirstBlood = c(as.integer(input$blueFirstBlood)),
-                                            blueEliteMonsters = c(as.integer(input$blueEliteMonsters)),
-                                            blueTotalJungleMinionsKilled = c(input$blueTotalJungleMinionsKilled),
-                                            blueGoldDiff = c(input$blueGoldDiff),
-                                            blueCSPerMin = c(input$blueCSPerMin),
-                                            redHeralds = c(as.integer(input$redHeralds)),
-                                            redTotalJungleMinionsKilled = c(input$redTotalJungleMinionsKilled)),
+                                 data.frame(blueFirstBlood = c(as.integer(input$blueFirstBloodDt)),
+                                            blueEliteMonsters = c(as.integer(input$blueEliteMonstersDt)),
+                                            blueTotalJungleMinionsKilled = c(input$blueTotalJungleMinionsKilledDt),
+                                            blueGoldDiff = c(input$blueGoldDiffDt),
+                                            blueCSPerMin = c(input$blueCSPerMinDt),
+                                            redHeralds = c(as.integer(input$redHeraldsDt)),
+                                            redTotalJungleMinionsKilled = c(input$redTotalJungleMinionsKilledDt)),
                                  model.type = 'dt'
                                  )
     }
@@ -972,6 +960,30 @@ server <- function(input, output, session) {
     striped = TRUE
   )
   output$rf_test_table <- renderTable(
+    resultsTable(rf_test_results()),
+    align = "lccc", # left-align first column, centre rest
+    striped = TRUE
+  )
+
+  output$rfPrediction <- eventReactive(
+    eventExpr = input$rfModelPredict, {
+      valueExpr = predict.winner(randomForest(),       
+                                 data.frame(blueFirstBlood = c(as.integer(input$blueFirstBloodRf)),
+                                            blueEliteMonsters = c(as.integer(input$blueEliteMonstersRf)),
+                                            blueTotalJungleMinionsKilled = c(input$blueTotalJungleMinionsKilledRf),
+                                            blueGoldDiff = c(input$blueGoldDiffRf),
+                                            blueCSPerMin = c(input$blueCSPerMinRf),
+                                            redHeralds = c(as.integer(input$redHeraldsRf)),
+                                            redTotalJungleMinionsKilled = c(input$redTotalJungleMinionsKilledRf)),
+                                 model.type = 'rf'
+                                 )
+    }
+  )
+
+  output$rf_test_scores_ <- renderText(
+    paste(calcScores(rf_test_results()), collapse = "\n")
+  )
+  output$rf_test_table_ <- renderTable(
     resultsTable(rf_test_results()),
     align = "lccc", # left-align first column, centre rest
     striped = TRUE

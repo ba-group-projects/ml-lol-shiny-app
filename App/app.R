@@ -407,7 +407,7 @@ dashboardContent <-
                 tagAppendAttributes(
                   textOutput("dt_train_scores"),
                   # allow linebreaks between scores, larger font here
-                  style = "white-space: pre-wrap; font-size: 17px;"
+                  style = "white-space: pre-wrap; font-size: 15px;"
                 ),
                 br(),
                 # training results table matches layout from presentation
@@ -423,7 +423,7 @@ dashboardContent <-
                 tagAppendAttributes(
                   textOutput("dt_test_scores"),
                   # allow linebreaks between scores, larger font here
-                  style = "white-space: pre-wrap; font-size: 17px;"
+                  style = "white-space: pre-wrap; font-size: 15px;"
                 ),
                 br(),
                 # training results table matches layout from presentation
@@ -528,7 +528,7 @@ dashboardContent <-
                 6,
                 h3("Decision Tree Performance"),
                 helpText(
-                  "According to the tree model that you have trained, the accuracy rate is:"
+                  "According to the model that you have trained, the accuracy rate is:"
                 ),
                 # test accuracy, true positive, and true negative
                 tagAppendAttributes(
@@ -619,11 +619,11 @@ dashboardContent <-
                 tagAppendAttributes(
                   textOutput("rf_train_scores"),
                   # allow linebreaks between scores, larger font here
-                  style = "white-space: pre-wrap; font-size: 17px;"
+                  style = "white-space: pre-wrap; font-size: 15px;"
                 ),
                 br(),
                 # training results table matches layout from presentation
-                tableOutput("rf_train_table")
+                # tableOutput("rf_train_table")
               ),
               column(
                 6,
@@ -635,7 +635,7 @@ dashboardContent <-
                 tagAppendAttributes(
                   textOutput("rf_test_scores"),
                   # allow linebreaks between scores, larger font here
-                  style = "white-space: pre-wrap; font-size: 17px;"
+                  style = "white-space: pre-wrap; font-size: 15px;"
                 ),
                 br(),
                 # training results table matches layout from presentation
@@ -695,17 +695,13 @@ dashboardContent <-
                 6,
                 h3("Random Forest Performance"),
                 helpText(
-                  "These are the measures of how good your model was",
-                  "when it was ran on the test data set. Recall what",
-                  "was said in lectures about how we interpret the",
-                  "differences between measures these and the measures",
-                  "from the training data."
+                  "According to the model that you have trained, the accuracy rate is:"
                 ),
                 # test accuracy, true positive, and true negative
                 tagAppendAttributes(
                   textOutput("rf_test_scores_"),
                   # allow linebreaks between scores, larger font here
-                  style = "white-space: pre-wrap; font-size: 17px;"
+                  style = "white-space: pre-wrap; font-size: 15px;"
                 ),
                 br(),
                 # training results table matches layout from presentation
@@ -783,7 +779,7 @@ dashboardContent <-
           </h2>
           <br>
           <h3>
-              <b>What is predicted accuracy?</b>
+              What is predicted accuracy?
           </h3>
           <br>
           <p style="font-size:16px">
@@ -792,7 +788,7 @@ dashboardContent <-
           </p>
           <br>
           <h3>
-              <b>What is true positive rate (TPR)?</b>
+              What is true positive rate (TPR)?
           </h3>
           <br>
           <p style="font-size:16px">
@@ -800,7 +796,7 @@ dashboardContent <-
           </p>
           <br>
           <h3>
-              <b>What is true negative rate (TNR)?</b>
+              What is true negative rate (TNR)?
           </h3>
           <br>
           <p style="font-size:16px">
@@ -808,7 +804,7 @@ dashboardContent <-
           </p>
           <br>
           <h4>
-              <b>Why cannot I adjust all of the parameters when predict the result?</b> #TODO
+              Why cannot I adjust all of the parameters when predict the result?#TODO
           </h4>
           <br>
           <p style="font-size:16px">

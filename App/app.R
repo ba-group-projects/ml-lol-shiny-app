@@ -251,7 +251,7 @@ predict.winner <- function(model, user.input, model.type) {
       prediction = predict(model, user.input)
       prediction = colnames(data.frame(prediction))[max.col(data.frame(prediction))]
   } else {
-      prediction = predict(model, user.input)
+      prediction = paste(predict(model, user.input),"Team Wins!", sep = " ")
   }
   
   return(prediction)
@@ -709,7 +709,12 @@ dashboardContent <-
               ),
               column(
                 6,
-                textOutput("rfPrediction")
+                h3("Prediction"),
+                helpText('According to the input data, we predict that:'),
+                br(),
+
+                span(textOutput("rfPrediction"), style = "font-size:20px"),
+                # span("Teams will win!", style = "color: #111")
               )
             )
           ),

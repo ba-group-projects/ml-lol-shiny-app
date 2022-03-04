@@ -83,9 +83,9 @@ useTree <- function(tree, data) {
   return(results)
 }
 
-############################################################
-##############   >>> The the features <<<   ################
-############################################################
+######################################################################
+##############   >>> Get Decision Tree features <<<   ################
+######################################################################
 get.dt.features <- function(tree) {
   # We will give our users the option to modify the features
   # The features we give them depends on the tree model they have generated
@@ -621,7 +621,9 @@ dashboardContent <-
                   textOutput("rf_train_scores"),
                   style = "white-space: pre-wrap; font-size: 15px;"
                 ),
-                br()
+                br(),
+                # training results table matches layout from presentation
+                tableOutput("rf_train_table")
               ),
               column(
                 6,

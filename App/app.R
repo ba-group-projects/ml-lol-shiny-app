@@ -1,4 +1,11 @@
 ############################################################
+###############   >>> Important!!!!!!!! ####################
+############################################################
+# set the working directory according to your own path
+# setwd("your path")
+
+
+############################################################
 ################ Import the shiny package ##################
 ############################################################
 library(shinydashboard)
@@ -16,69 +23,6 @@ library(corrplot)
 library(rpart)
 library(rpart.plot)
 library(stringr)
-
-############################################################
-###################### Read data ###########################
-############################################################
-# set the working directory according to your own path
-# setwd("your path")
-
-# read data
-lol.ori <- read.csv("high_diamond_ranked_10min.csv", header = TRUE)
-
-# summary of data
-summary(lol.ori)
-
-# pre-process data
-sum(is.na(lol.ori)) # check missing values
-lol.ori <- lol.ori[, -1]
-set.seed(100) # set the seed for random number generator
-lol.blue <- lol.ori[sample(which(lol.ori$blueWins == 1, ), 240), ]
-lol.red <- lol.ori[sample(which(lol.ori$blueWins == 0, ), 240), ]
-lol.sample <- rbind(lol.blue, lol.red)
-
-# feature engineering
-par(mfrow = c(1, 1))
-blue.features <- lol.sample[, c(2:20)]
-corrplot(cor(blue.features), tl.col = "black", diag = FALSE)
-drop.blue.features <- c(
-  "blueDragons", "blueHeralds", "blueKills",
-  "blueDeaths", "blueAssists", "blueTotalGold",
-  "blueAvgLevel", "blueTotalExperience", "blueExperienceDiff",
-  "blueGoldPerMin", "blueTotalMinionsKilled"
-)
-blue.features <- blue.features[, !(colnames(blue.features) %in% drop.blue.features)]
-
-red.features <- lol.sample[, -c(1, 2:20)]
-corrplot(cor(blue.features, red.features), tl.col = "black", diag = TRUE)
-drop.red.features <- c(
-  "redFirstBlood", "redKills", "redDeaths", "redAssists",
-  "redEliteMonsters", "redDragons", "redTotalGold",
-  "redAvgLevel", "redTotalExperience", "redTotalMinionsKilled",
-  "redGoldDiff", "redExperienceDiff", "redCSPerMin", "redGoldPerMin"
-)
-red.features <- red.features[, !(colnames(red.features) %in% drop.red.features)]
-blueWins <- lol.sample$blueWins
-
-lol <- cbind(blue.features, red.features, blueWins)
-corrplot(cor(lol), tl.col = "black", diag = FALSE)
-drop.more.features <- c(
-  "blueWardsPlaced", "blueWardsDestroyed", "blueTowersDestroyed",
-  "redWardsPlaced", "redWardsDestroyed", "redTowersDestroyed"
-)
-lol <- lol[, !(colnames(lol) %in% drop.more.features)]
-
-# modify classification column
-lol$blueWins[lol$blueWins == 1] <- "Blue"
-lol$blueWins[lol$blueWins == 0] <- "Red"
-lol$blueWins <- factor(lol$blueWins)
-
-set.seed(100)
-# random split to training and test set
-# train.index = createDataPartition(lol$blueWins, p = 0.6, list = FALSE)
-train.index <- createDataPartition(lol$blueWins, p = 0.7, list = FALSE)
-train <- lol[train.index, ]
-test <- lol[-train.index, ]
 
 ############################################################
 ################    Custom functions   #####################
@@ -275,6 +219,68 @@ headerbar <- dashboardHeader(
       )
     )
 )
+
+############################################################
+###################### Read data ###########################
+############################################################
+
+# read data
+lol.ori <- read.csv("high_diamond_ranked_10min.csv", header = TRUE)
+
+# summary of data
+summary(lol.ori)
+
+# pre-process data
+sum(is.na(lol.ori)) # check missing values
+lol.ori <- lol.ori[, -1]
+set.seed(100) # set the seed for random number generator
+lol.blue <- lol.ori[sample(which(lol.ori$blueWins == 1, ), 240), ]
+lol.red <- lol.ori[sample(which(lol.ori$blueWins == 0, ), 240), ]
+lol.sample <- rbind(lol.blue, lol.red)
+
+# feature engineering
+par(mfrow = c(1, 1))
+blue.features <- lol.sample[, c(2:20)]
+corrplot(cor(blue.features), tl.col = "black", diag = FALSE)
+drop.blue.features <- c(
+  "blueDragons", "blueHeralds", "blueKills",
+  "blueDeaths", "blueAssists", "blueTotalGold",
+  "blueAvgLevel", "blueTotalExperience", "blueExperienceDiff",
+  "blueGoldPerMin", "blueTotalMinionsKilled"
+)
+blue.features <- blue.features[, !(colnames(blue.features) %in% drop.blue.features)]
+
+red.features <- lol.sample[, -c(1, 2:20)]
+corrplot(cor(blue.features, red.features), tl.col = "black", diag = TRUE)
+drop.red.features <- c(
+  "redFirstBlood", "redKills", "redDeaths", "redAssists",
+  "redEliteMonsters", "redDragons", "redTotalGold",
+  "redAvgLevel", "redTotalExperience", "redTotalMinionsKilled",
+  "redGoldDiff", "redExperienceDiff", "redCSPerMin", "redGoldPerMin"
+)
+red.features <- red.features[, !(colnames(red.features) %in% drop.red.features)]
+blueWins <- lol.sample$blueWins
+
+lol <- cbind(blue.features, red.features, blueWins)
+corrplot(cor(lol), tl.col = "black", diag = FALSE)
+drop.more.features <- c(
+  "blueWardsPlaced", "blueWardsDestroyed", "blueTowersDestroyed",
+  "redWardsPlaced", "redWardsDestroyed", "redTowersDestroyed"
+)
+lol <- lol[, !(colnames(lol) %in% drop.more.features)]
+
+# modify classification column
+lol$blueWins[lol$blueWins == 1] <- "Blue"
+lol$blueWins[lol$blueWins == 0] <- "Red"
+lol$blueWins <- factor(lol$blueWins)
+
+set.seed(100)
+# random split to training and test set
+# train.index = createDataPartition(lol$blueWins, p = 0.6, list = FALSE)
+train.index <- createDataPartition(lol$blueWins, p = 0.7, list = FALSE)
+train <- lol[train.index, ]
+test <- lol[-train.index, ]
+
 
 ############################################################
 ##############   >>> Body Component <<<   ##################

@@ -248,7 +248,7 @@ resultsTable <- function(results) {
 # header
 
 headerbar <- dashboardHeader(
-  title = span(img(src = "logo.png", height = 40), "LOL Diamond Rank Analytics"), # TODO solve broken picture
+  title = span(img("LOL Diamond Rank Analytics")),
   # titleWidth = 300,
   tags$li(class = "dropdown", tags$style(".skin-blue .main-header .navbar {background-color: #111111;}"))
 )
@@ -300,7 +300,7 @@ dashboardContent <-
       tabItem(tabName = "classificationModel", fluidRow(fluidRow(HTML('<!DOCTYPE html>
 <html>
 <div style="margin-top:-50px">
-<img src="forest3.png" style="max-height:20px overflow:hidden">
+<img src="forest.png" style="max-height:100px;overflow:hidden;width:100%">
 </div>
 <div style="margin-left:10%;margin-right:15%;margin-top:4%;background:white;padding:40px ">
 <h2>
@@ -345,7 +345,7 @@ dashboardContent <-
       tabItem(tabName = "dataset", fluidRow(fluidRow(HTML('<!DOCTYPE html>
 <html>
 <div style="margin-top:-50px">
-<img src="lolbanner3.png" style="max-height:100px;overflow:hidden;width:100%">
+<img src="lolbanner.png" style="max-height:100px;overflow:hidden;width:100%">
 </div>
 <div style="margin-left:10%;margin-right:15%;margin-top:4%;background:white;padding:20px ">
 <h2>
@@ -635,29 +635,48 @@ dashboardContent <-
       #   tabName = "introductionVideo",
       #   HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/0uyLRPmmYPk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
       # ),
-        tabItem(tabName = "dataset", fluidRow(fluidRow(HTML('
+        tabItem(tabName = "faq", fluidRow(fluidRow(HTML('
         <!DOCTYPE html>
           <html>
           <div style="margin-top:-50px">
-          <img src="lolbanner3.png" style="max-height:100px;overflow:hidden;width:100%">
+          <img src="tf.png" style="max-height:100px;overflow:hidden;width:100%">
           </div>
           <div style="margin-left:10%;margin-right:15%;margin-top:4%;background:white;padding:20px ">
           <h2>
-              Dataset:
+              FAQ
           </h2>
           <br>
+          <h3>
+              <b>What is predicted accuracy?</b>
+          </h3>
+          <br>
           <p style="font-size:16px">
-              <p style="font-size:16px">The dataset comes from the first 10 minutes of 10,000 ranked games from League of Legends, a MOBA (multiplayer online battle arena) where 2 teams (blue and red) play against each other. Players in these ranked games are roughly the same level. The dataset contains 38 features (19 per team) containing information relating to score per minute (SPM), enemies killed, and rank. For this app, we will start with 37 predictors and the classification will be if the blue team wins. 
-              </p>
-              <br>
-            
-          </br>
-          <iframe width="560" height="315" src="https://www.youtube.com/embed/0uyLRPmmYPk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              Accuracy score measures how many labels the model got right out of the total number of predictions.
+              If the accuracy score is higher in the training dataset then the model is more likely to be overfitted. 
+          </p>
           <br>
+          <h3>
+              <b>What is true positive rate (TPR)?</b>
+          </h3>
           <br>
+          <p style="font-size:16px">
+              The probability that an event of blue team winning is predicted to win.
+          </p>
           <br>
+          <h3>
+              <b>What is true negative rate (TNR)?</b>
+          </h3>
           <br>
+          <p style="font-size:16px">
+              The probability that an event of blue team losing is predicted to lose.
+          </p>
           <br>
+          <h4>
+              <b>Why cannot I adjust all of the parameters when predict the result?</b> #TODO
+          </h4>
+          <br>
+          <p style="font-size:16px">
+              #TODO
 
           </div>
           

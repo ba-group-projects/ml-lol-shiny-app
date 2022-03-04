@@ -13,9 +13,9 @@ library(rpart.plot)
 library(stringr)
 
 # read data
-# setwd("~/OneDrive/Documents/MyOversea/Cass Study/machine learning/MTP/MTP1/machine-learning-gp1")
+setwd("~/OneDrive/Documents/MyOversea/Cass Study/machine learning/MTP/MTP1/machine-learning-gp1")
 # setwd("/Volumes/GoogleDrive-117044175360160401988/My Drive/github/machine-learning-gp1")
-setwd("H:/My Drive/github/machine-learning-gp1")
+# setwd("H:/My Drive/github/machine-learning-gp1")
 
 lol.ori <- read.csv("high_diamond_ranked_10min.csv", header = TRUE)
 
@@ -264,7 +264,7 @@ predict.winner <- function(model, user.input, model.type) {
 # header
 
 headerbar <- dashboardHeader(
-  title = span(img("LOL Diamond Rank Analytics")),
+  title = span(img("LOL Diamond Rank Analytics")), #TODO
   # titleWidth = 300,
   tags$li(class = "dropdown", tags$style(".skin-blue .main-header .navbar {background-color: #111111;}"))
 )
@@ -342,12 +342,14 @@ dashboardContent <-
     <h3>What Is A Random Forest</h3>
     <br>
     <br>
+    <img src="randomforest.gif" width=500>
+    <br>
     <p style="font-size:16px">
     Random forests is a modified approach to bagging (bootstrap sampling that averages the aggregate of individual models), in which an algorithm inspects a random subset of features in the data at each split in the learning process, rather than all features seen in bagging. This is done to avoid correlation between the trees. Using multiple bootstrapped samples of the original dataset reduces variance, resulting in lower overfitting.
     </p>
     <br>
     <br>
-    <img src="randomforest.gif" width=500>
+
     <iframe width="560" height="315" src="https://www.youtube.com/embed/J4Wdy0Wc_xQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     <div align="center">
     

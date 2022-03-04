@@ -515,31 +515,31 @@ dashboardContent <-
             fluidRow(
               column(
                 6,
-                h2("Decision Tree Performance"),
+                h3("Decision Tree Performance"),
                 helpText(
-                  "These are the measures of how good your model was",
-                  "when it was ran on the test data set. Recall what",
-                  "was said in lectures about how we interpret the",
-                  "differences between measures these and the measures",
-                  "from the training data."
+                  "According to the tree model that you have trained, the accuracy rate is:"
                 ),
                 # test accuracy, true positive, and true negative
                 tagAppendAttributes(
                   textOutput("dt_test_scores_"),
                   # allow linebreaks between scores, larger font here
-                  style = "white-space: pre-wrap; font-size: 17px;"
+                  style = "white-space: pre-wrap; font-size: 15px;"
                 ),
                 br(),
                 # training results table matches layout from presentation
-                tableOutput("dt_test_table_")
+                # tableOutput("dt_test_table_")
               ),
               column(
                 6,
-                span(textOutput("dtPrediction"),style='color:#111'),
+                
+                h2("Prediction"),
+                helpText('According to the input data, we predict that'),
+                br(),
                 conditionalPanel("output.dtPrediction == 'Blue'",
-                  span(img(src = "redteamwins.png", height = 100,)),
+                  span(img(src = "blueteamwins.png", height = 80,)),
                   ),
-                conditionalPanel("output.dtPrediction == 'Red'",span(img(src = "redteamwins.png", height = 100)))
+                conditionalPanel("output.dtPrediction == 'Red'",span(img(src = "redteamwins.png", height = 80))),
+                span(textOutput("dtPrediction"),style='color:#fff')
                 # conditionalPanel("output.dtPrediction == 'red'",span(textOutput("dtPrediction"),style='color:#111'))
               )
             )

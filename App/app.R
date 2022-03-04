@@ -272,17 +272,17 @@ dashboardContent <-
           </div>
           <div style="margin-left:10%;margin-right:15%;margin-top:4%;background:white;padding:40px ">
               <h2>
-                  Introduction:
+                  Introduction
               </h2>
               <br>
               <p style="font-size:16px">
-              <p style="font-size:16px">The aim of this app is to explain how decision trees and random forest works in
-                  classification problems. We aim to showcase this by creating a classification model to predict the winner of
-                  League of Legends, an online video game. Users will be able to play around with the model’s hyperparameters to
-                  see its effect on the model performance.
+              <p style="font-size:16px">The aim of this app is to explain how decision trees and random forests are applied in
+                  classification problems. We will illustrate this through classifying the winner of a match in League of Legends, 
+                  a popular online Multiplayer Online Battle Arena (MOBA) video game. The app allows users to train their own decision trees
+                  and random forests, asses the performance of their trained models, and predict the winner of a match.
               </p>
               <br>
-              <h3>What Is A Decision tree</h3>
+              <h3>What is a Decision Tree?</h3>
               <br>
               <br>
               <p style="font-size:16px">Decision trees perform a classification on data in a hierarchical structure by observing
@@ -296,13 +296,14 @@ dashboardContent <-
                   allowfullscreen></iframe>
               <br>
               <br>
-              <h3>What Is A Random Forest</h3>
+              <h3>What is a Random Forest?</h3>
               <br>
               <br>
               <img src="randomforest.gif" width=500>
               <br>
+              <br>
               <p style="font-size:16px">
-                  Random forests is a modified approach to bagging (bootstrap sampling that averages the aggregate of individual
+                  Random forest is a modified approach to bagging (bootstrap sampling that averages the aggregate of individual
                   models), in which an algorithm inspects a random subset of features in the data at each split in the learning
                   process, rather than all features seen in bagging. This is done to avoid correlation between the trees. Using
                   multiple bootstrapped samples of the original dataset reduces variance, resulting in lower overfitting.
@@ -332,7 +333,7 @@ dashboardContent <-
           </div>
           <div style="margin-left:10%;margin-right:15%;margin-top:4%;background:white;padding:20px ">
               <h2>
-                  Dataset:
+                  Dataset
               </h2>
               <br>
               <p style="font-size:16px">
@@ -361,7 +362,7 @@ dashboardContent <-
                 <p style="font-size:16px">
                   <b>blueEliteMonsters:</b> &nbsp;&nbsp;&nbsp;&nbsp;  Number of elite monsters killed by the blue team (Dragons and Heralds)
                 </p>
-                <p>
+                <p style="font-size:16px">
                   <b>blueFirstBlood:</b> &nbsp;&nbsp;&nbsp;&nbsp;   First kill of the game. 1 if the blue team did the first kill, 0 otherwise
                 </p>
                 <p style="font-size:16px">
@@ -417,7 +418,7 @@ dashboardContent <-
                 h3("Test Results"),
                 helpText(
                   "These are the measures of how good your model was when it was ran on the test data 
-                  set. The test result percentage is the difference of the training slider."
+                  set. The test data percentage is the difference of the training slider."
                 ),
                 # test accuracy, true positive, and true negative
                 tagAppendAttributes(
@@ -543,7 +544,7 @@ dashboardContent <-
               ),
               column(
                 6,
-                h2("Prediction"),
+                h3("Prediction"),
                 helpText("According to the input data, we predict that"),
                 br(),
                 conditionalPanel(
@@ -634,7 +635,7 @@ dashboardContent <-
                 h3("Test Results"),
                 helpText(
                 "These are the measures of how good your model was when it was ran on the test
-                data set. The test result percentage is the difference of the training slider."
+                data set. The test data percentage is the difference of the training slider."
                 ),
                 # test accuracy, true positive, and true negative
                 tagAppendAttributes(
@@ -784,12 +785,12 @@ dashboardContent <-
               The probability that an event of blue team losing is predicted to lose.
           </p>
           <br>
-          <h4>
-              Why cannot I adjust all of the parameters when predict the result?#TODO
+          <h3>
+              Why can I not adjust all 7 features when using the trained Decision Tree to make predictions? 
           </h4>
           <br>
           <p style="font-size:16px">
-              #TODO
+              Only features that remain in the trained Decision Tree will be used to make predictions.
 
           </div>
 

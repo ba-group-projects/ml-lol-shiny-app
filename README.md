@@ -14,5 +14,4 @@ The structure of the code is as follows:
 - README.md
 
 ## Known Issues
-1. Th
-2. You should use 'Run in External'(better) option to run the app.R file. Otherwise, if you run it in the windows, R studio might have some issues, such as layout issues.
+1. You should use 'Run in External'(better) option to run the app.R file. Otherwise, if you run it in the windows, R studio might have some issues, such as layout issues.

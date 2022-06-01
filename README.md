@@ -1,6 +1,6 @@
 ![banner image](https://wallpaperaccess.com/full/2379009.jpg)
 
-# Machine Learnin R Shiny App
+# Machine Learning R Shiny App
 An interactive web app that predicts the winner of a League of Legends match through Decision Tree and Random Forest models.
 
 ## Table of Contents

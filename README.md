@@ -1,11 +1,23 @@
-# # SMM636 Machine Learning MTP
-## How to start
+![banner image](https://wallpaperaccess.com/full/2379009.jpg)
+
+# Machine Learnin R Shiny App
+An interactive web app that predicts the winner of a League of Legends match through Decision Tree and Random Forest models.
+
+## Table of Contents
+* [Installation](#Installation)
+* [Project Motivation](#motivation)
+* [File Description](#description)
+* [Results](#Results)
+* [Known Issue](#issue)
+
+## Installation
 1. Install all the relevant packages
 2. Run the app.R file
 
+## Project Motivation <a name="motivation"></a>
+TODO
 
-
-## The structure of the code
+## File Description <a name="description"></a>
 The structure of the code is as follows:
 - App
   - www (the folder that contains all the pictures) 
@@ -13,5 +25,8 @@ The structure of the code is as follows:
   - high_diamond_ranked_10min.csv (the data set from: https://www.kaggle.com/bobbyscience/league-of-legends-diamond-ranked-games-10-min)
 - README.md
 
-## Known Issues
-1. You should use 'Run in External'(better) option to run the app.R file. Otherwise, if you run it in the windows, R studio might have some issues, such as layout issues.
+## Results
+TODO
+
+## Known Issue <a name="issue"></a>
+You should use 'Run in External'(better) option to run the app.R file. Otherwise, if you run it in the windows, R studio might have some issues, such as layout issues.
